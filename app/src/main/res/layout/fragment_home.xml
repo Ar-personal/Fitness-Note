@@ -18,7 +18,7 @@
 
 
         <TextView
-            android:id="@+id/monthYearTV"
+            android:id="@+id/monthYear"
             android:layout_width="0dp"
             android:layout_weight="2"
             android:layout_height="wrap_content"
@@ -107,5 +107,6 @@
         android:id="@+id/calendarRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="200dp"/>
+
 
 </LinearLayout>
