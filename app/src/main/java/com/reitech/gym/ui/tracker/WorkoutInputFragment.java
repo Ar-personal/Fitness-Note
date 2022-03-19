@@ -36,10 +36,12 @@ public class WorkoutInputFragment extends Fragment {
     private EditText first, second;
     private List<String[]> workoutHistory;
     private RecyclerView workoutInputList;
+    private String workoutName;
 
-    public WorkoutInputFragment(Workout.WorkoutEnum type) {
+    public WorkoutInputFragment(String workoutName, Workout.WorkoutEnum type) {
         this.type = type;
         this.empty = empty;
+        this.workoutName = workoutName;
     }
 
     @Nullable
@@ -65,13 +67,26 @@ public class WorkoutInputFragment extends Fragment {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String[] line = new String[3];
+                String[] line = new String[8];
                 //trophy code needs to be handled here
-                line[0] = "trophy";
-                line[1] = first.getText().toString();
-                line[2] = first.getText().toString();
+                line[2] = "trophy";
+                line[3] = first.getText().toString();
+                line[4] = second.getText().toString();
+                //time units for now
+                line[5] = "";
+                line[6] = "";
+                line[7] = "";
                 workoutHistory.add(line);
+
+                Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
+
                 workoutInputAdapter.notifyDataSetChanged();
+
+                TrackerFragment trackerFragment = (TrackerFragment) f;
+                trackerFragment.setWorkout(workoutName, line, false);
+
+
+
             }
         });
 

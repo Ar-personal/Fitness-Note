@@ -36,9 +36,9 @@ public class WorkoutInputAdapter extends RecyclerView.Adapter<WorkoutViewHolder>
     @Override
     public void onBindViewHolder(@NonNull @NotNull WorkoutViewHolder holder, int position) {
         String[] list = lines.get(position);
-        holder.trophy.setText(list[0]);
-        holder.first.setText(list[1]);
-        holder.second.setText(list[2]);
+        holder.trophy.setText(list[2]);
+        holder.first.setText(list[3]);
+        holder.second.setText(list[4]);
     }
 
     @Override

@@ -25,6 +25,7 @@ import com.reitech.gym.ui.tracker.WorkoutInputFragment;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -75,13 +76,32 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
 
     private void initExerciseList() {
         List<String> exerciseListAbs = new ArrayList<>();
+        List<String> exerciseListBack = new ArrayList<>();
+        List<String> exerciseListBiceps = new ArrayList<>();
+        List<String> exerciseListCardio = new ArrayList<>();
         List<String> exerciseListChest = new ArrayList<>();
-        exerciseListAbs.add("Push-up");
+        List<String> exerciseListLegs = new ArrayList<>();
+        List<String> exerciseListShoulders = new ArrayList<>();
+        List<String> exerciseListTriceps = new ArrayList<>();
 
-        exerciseListChest.add("Bench Press");
+
+        exerciseListAbs.addAll(Arrays.asList("Ab-Wheel", "Cable Crunch", "Crunch", "Crunch Machine", "Dragon Flag", "Hanging Knee Raise", "Hanging Leg Raise", "Plank", "Side Plank"));
+        exerciseListBack.addAll(Arrays.asList("Barbell Row", "Barbell Shrug", "Chin-Up", "Dead-lift", "Dip Assist", "Diverging Lat Pull-down", "Dumbbell Row", "Good Morning", "Hammer Strength Row", "Lat Pull-down", "Machine Shrug", "Neutral Chin Up", "Overhead Cable Pull", "Pendlay Row", "Pull-Up", "Pull-Up Assist", "Rack Pull", "Seated Cable Row", "Straight-Arm Cable Push-down", "T-Bar Row"));
+        exerciseListBiceps.addAll(Arrays.asList("Barbell Curl", "Cable Curl", "Dumbbell Concentration Curl", "Dumbbell Curl", "Dumbbell Hammer Curl", "Dumbbell Preach Curl", "EZ-Bar Curl", "EZ-Bar Preacher Curl", "Seated Dip", "Seated Incline Dumbbell Curl", "Seated Machine Curl"));
+        exerciseListCardio.addAll(Arrays.asList("Cycling", "Elliptical Trainer", "Rowing Machine", "Running (Outdoor)", "Running (Treadmill)", "Stair Climber", "Stationary Bike", "Swimming", "Walking"));
+        exerciseListChest.addAll(Arrays.asList("Cable Crossover", "Converging Chest Press", "Decline Barbell Bench Press", "Decline Hammer Strength Chest Press", "Flat Barbell Bench Press", "Flat Dumbbell Bench Press", "Flat Dumbbell Fly", "Incline Dumbbell Fly", "Incline Hammer Strength Chest Press", "Push-Up", "Seated Machine Cable Fly", "Seated Machine Fly"));
+        exerciseListLegs.addAll(Arrays.asList("Barbell Calf Raise", "Barbell Front Squat", "Barbell Glute Bridge", "Barbell Squat", "Donkey Calf Raise", "Glute-Ham Raise", "Hack Squat", "Leg Extension Machine", "Leg Press", "Lying Leg Curl Machine", "Romanian Dead-life", "Seated Calf Raise Machine", "Seated Leg Curl Machine", "Standing Calf Raise Machine", "Still-Legged Dead-lift", "Sumo Dead-lift"));
+        exerciseListShoulders.addAll(Arrays.asList("Arnold Dumbbell Press", "Behind The Neck Barbell Press", "Cable Face Pull", "Front Dumbbell Raise", "Hammer Strength Shoulder Press", "Lateral Dumbbell Raise", "Lateral Machine Raise", "Log Press", "One-Arm Standing Dumbbell Press", "Overhead Press", "Push Press", "Rear Delt Dumbbell Raise", "Rear Delt Machine Fly", "Seated Dumbbell Lateral Raise", "Seated Dumbbell Press", "Smith Machine Overhead Press"));
+        exerciseListTriceps.addAll(Arrays.asList("Cable Overhead Triceps Extension", "Close Grip Barbell Bench Press", "Dumbbell Overhead Triceps Extension", "EZ-Bar Skullcrusher", "Lying Triceps Extension", "Parallel Bar Triceps Dip", "Ring Dip", "Rope Push Down", "Smith Machine Close Grip Bench Press", "Triceps Extension Machine", "V-Bar Push Down"));
 
         exerciseMap.put("Abs", exerciseListAbs);
+        exerciseMap.put("Back", exerciseListBack);
+        exerciseMap.put("Biceps", exerciseListBiceps);
+        exerciseMap.put("Cardio", exerciseListCardio);
         exerciseMap.put("Chest", exerciseListChest);
+        exerciseMap.put("Legs", exerciseListLegs);
+        exerciseMap.put("Shoulders", exerciseListShoulders);
+        exerciseMap.put("Triceps", exerciseListTriceps);
 
     }
 
@@ -114,12 +134,13 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
 
 
-        TrackerFragment trackerFragment = (TrackerFragment) f;
-        trackerFragment.addWorkout(exerciseName);
+//        TrackerFragment trackerFragment = (TrackerFragment) f;
+//        trackerFragment.addWorkout(exerciseName);
 
-        Fragment workout = new WorkoutInputFragment(Workout.WorkoutEnum.WEIGHT_AND_REPS);
+        Fragment workout = new WorkoutInputFragment(exerciseName, Workout.WorkoutEnum.WEIGHT_AND_REPS);
         getParentFragmentManager().beginTransaction()
                 .add(R.id.nav_host_fragment_activity_main, workout).addToBackStack(null).commit();
+        onDestroy();
 
     }
 

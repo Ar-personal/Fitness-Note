@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity{
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        getSupportActionBar().hide();
 
         savedDataSetup();
 
@@ -64,58 +65,17 @@ public class MainActivity extends AppCompatActivity{
         Fragment homeFragment = new HomeFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.nav_host_fragment_activity_main, homeFragment).addToBackStack(null).commit();
-
-
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-//        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-//                R.id.navigation_home, R.id.navigation_programs)
-//                .build();
-//        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-//        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-//        NavigationUI.setupWithNavController(binding.navView, navController);
-
-//        navController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
-//            @Override
-//            public void onDestinationChanged(@NotNull NavController navController, @NotNull NavDestination navDestination, @Nullable Bundle bundle) {
-//                if(navDestination.getId() == R.id.navigation_tracker){
-//                    navView.setVisibility(View.INVISIBLE);
-//                }else{
-//                    navView.setVisibility(View.VISIBLE);
-//                }
-//            }
-//        });
-
-
-//        Fragment trackerFragment = new TrackerFragment(selectedDate);
-//        getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_activity_main, trackerFragment).addToBackStack(null).commit();
-
-
     }
 
 
     private void savedDataSetup() {
-        File folder = new File(getApplicationContext().getExternalFilesDir(null) + "/gains_tracker");
+        File folder = new File(getApplicationContext().getExternalFilesDir(null) + "/fitboost");
         boolean exists = false;
 
         if(!folder.exists())
             exists = folder.mkdir();
 
         final String trackedWorkouts = folder.toString() + "/" + "workouts.csv";
-
-        new Thread(){
-            public void run(){
-                try {
-                    CSVWriter csvWriter = new CSVWriter(new FileWriter(trackedWorkouts));
-                    String[] workout = "2022-03-09,Flat Barbell Bench Press,Chest,10.0, 5".split(",");
-                    csvWriter.writeNext(workout);
-                    csvWriter.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
     }
 
 
