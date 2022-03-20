@@ -8,25 +8,29 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:layout_margin="15dp"
-    android:background="@drawable/home_border">
+    android:background="@drawable/home_border"
+    android:backgroundTint="@color/background">
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:background="@drawable/home_border">
+        android:background="@drawable/home_border"
+        android:backgroundTint="@color/background">
 
 
         <TextView
             android:id="@+id/monthYear"
             android:layout_width="0dp"
-            android:layout_weight="2"
             android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:text="Feb 2021"
-            android:textStyle="bold"
-            android:textSize="20sp"
             android:textAlignment="center"
-            android:textColor="@color/black"/>
+            android:textColor="@color/dark"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
 
     </LinearLayout>
@@ -41,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="SUN"
-            android:textColor="@color/black"
+            android:textColor="@color/dark"
             android:textAlignment="center"
             android:textSize="16sp"/>
 
@@ -50,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="MON"
-            android:textColor="@color/black"
+            android:textColor="@color/dark"
             android:textAlignment="center"
             android:textSize="16sp"/>
 
@@ -59,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="TUE"
-            android:textColor="@color/black"
+            android:textColor="@color/dark"
             android:textAlignment="center"
             android:textSize="16sp"/>
 
@@ -68,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="WED"
-            android:textColor="@color/black"
+            android:textColor="@color/dark"
             android:textAlignment="center"
             android:textSize="16sp"/>
 
@@ -77,7 +81,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="THUR"
-            android:textColor="@color/black"
+            android:textColor="@color/dark"
             android:textAlignment="center"
             android:textSize="16sp"/>
 
@@ -86,7 +90,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="FRI"
-            android:textColor="@color/black"
+            android:textColor="@color/dark"
             android:textAlignment="center"
             android:textSize="16sp"/>
 
@@ -95,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="SAT"
-            android:textColor="@color/black"
+            android:textColor="@color/dark"
             android:textAlignment="center"
             android:textSize="16sp"/>
 

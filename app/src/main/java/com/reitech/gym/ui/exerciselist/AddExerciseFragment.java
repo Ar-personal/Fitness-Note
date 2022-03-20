@@ -2,6 +2,8 @@ package com.reitech.gym.ui.exerciselist;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,23 +40,17 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
 
-public class AddExerciseFragment extends Fragment implements ExerciseSection.ClickListener, SearchView.OnQueryTextListener, Filterable {
+public class AddExerciseFragment extends Fragment implements ExerciseSection.ClickListener, SearchView.OnQueryTextListener, Filterable{
 
     final Map<String, List<String>> exerciseMap = new LinkedHashMap<>();
 
     private SectionedRecyclerViewAdapter sectionedAdapter;
-    private List<String> searchList;
     private RecyclerView recyclerView;
-    private Fragment invoker;
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container,
                              @Nullable final Bundle savedInstanceStat) {
 
-
-
-
         final View view = inflater.inflate(R.layout.fragment_add_exercise, container, false);
-
 
         initExerciseList();
 
@@ -122,25 +118,34 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
             sectionAdapter.notifyAllItemsInserted();
         }
 
+
     }
 
     @Override
     public void onItemRootViewClicked(@NonNull final ExerciseSection section, final int itemAdapterPosition, final String exerciseName){
-//        Bundle bundle = getArguments();
-//        bundle.putString("workoutname", exerciseName);
-
-//        Fragment f = getParentFragmentManager().findFragmentByTag("addExercise");
-//        TrackerFragment ff = (TrackerFragment) f;
-        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
-
-
-//        TrackerFragment trackerFragment = (TrackerFragment) f;
-//        trackerFragment.addWorkout(exerciseName);
 
         Fragment workout = new WorkoutInputFragment(exerciseName, Workout.WorkoutEnum.WEIGHT_AND_REPS);
+
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
+        TrackerFragment trackerFragment = (TrackerFragment) f;
+        List<String[]> toAdd = trackerFragment.getExerciseLinesFromExercise(exerciseName);
+        Bundle bundle = new Bundle();
+        for(int i = 0; i < toAdd.size(); i++){
+            bundle.putStringArray("list" + i, toAdd.get(i));
+        }
+
+        workout.setArguments(bundle);
+
         getParentFragmentManager().beginTransaction()
                 .add(R.id.nav_host_fragment_activity_main, workout).addToBackStack(null).commit();
         onDestroy();
+
+
+
+        //search for all lines in tracker for specific exercise name and return exercise lines that already exist
+
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+
 
     }
 
@@ -175,8 +180,6 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
             }
         }
 
-
-
         sectionedAdapter.notifyDataSetChanged();
         return changed;
     }
@@ -185,4 +188,5 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
     public Filter getFilter() {
         return null;
     }
+
 }

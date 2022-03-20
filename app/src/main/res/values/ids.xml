@@ -2,5 +2,6 @@
 
 <resources>
     <item name="workout_name" type="id"/>
-
+    <item name="weight" type="id"/>
+    <item name="reps" type="id"/>
 </resources>

@@ -49,6 +49,9 @@ public class WorkoutInputFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_workout_input, container, false);
+        ;
+
+
 
         root = view.findViewById(R.id.workout_input_layout);
         save = view.findViewById(R.id.saveButton);
@@ -64,6 +67,27 @@ public class WorkoutInputFragment extends Fragment {
         WorkoutInputAdapter workoutInputAdapter = new WorkoutInputAdapter(workoutHistory);
         workoutInputList.setAdapter(workoutInputAdapter);
 
+        //start gathering old workout history of the day
+        List<String[]> lines = new ArrayList<>();
+        Bundle bundle = getArguments();
+        if(bundle != null){
+            for(String key : bundle.keySet()){
+                if(key.contains("list"))
+                    lines.add((String[]) bundle.get(key));
+            }
+        }
+        //add older workouts to recycler view
+        // TODO: 20/03/2022 unify string indices across the board 
+        for(int i = 0; i < lines.size(); i++){
+            String[] toAdd = new String[8];
+            String[] iterator = lines.get(i);
+            toAdd[3] = iterator[1];
+            toAdd[4] = iterator[2];
+            workoutHistory.add(toAdd);
+            workoutInputAdapter.notifyDataSetChanged();
+        }
+
+
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,17 +100,17 @@ public class WorkoutInputFragment extends Fragment {
                 line[5] = "";
                 line[6] = "";
                 line[7] = "";
-                workoutHistory.add(line);
 
-                Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
+                if(!first.getText().toString().isEmpty() && !second.getText().toString().isEmpty()){
+                    workoutHistory.add(line);
 
-                workoutInputAdapter.notifyDataSetChanged();
+                    Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
 
-                TrackerFragment trackerFragment = (TrackerFragment) f;
-                trackerFragment.setWorkout(workoutName, line, false);
+                    workoutInputAdapter.notifyDataSetChanged();
 
-
-
+                    TrackerFragment trackerFragment = (TrackerFragment) f;
+                    trackerFragment.setWorkout(workoutName, line, false);
+                }
             }
         });
 
@@ -133,7 +157,9 @@ public class WorkoutInputFragment extends Fragment {
         TextView weightText =  new TextView(getContext());
         weightText.setText(label);
         weightText.setTextSize(20);
+        weightText.setTextColor(getResources().getColor(R.color.dark));
         weightText.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+        weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         weightText.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
 
         weight.addView(weightText);
@@ -147,6 +173,7 @@ public class WorkoutInputFragment extends Fragment {
         ImageButton left = new ImageButton(getContext());
         left.setImageResource(R.drawable.ic_baseline_keyboard_arrow_down);
         left.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+        left.setBackgroundColor(getResources().getColor(R.color.dark));
 
         weightInt.setText("");
         weightInt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -169,6 +196,7 @@ public class WorkoutInputFragment extends Fragment {
 
         ImageButton right = new ImageButton(getContext());
         right.setImageResource(R.drawable.ic_baseline_keyboard_arrow_up);
+        right.setBackgroundColor(getResources().getColor(R.color.dark));
         right.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
         right.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,15 +207,15 @@ public class WorkoutInputFragment extends Fragment {
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
-                i += 2.5;
+                i -= 2.5;
                 weightInt.setText(Double.toString(i));
+
             }
         });
 
         linearLayout.addView(left);
         linearLayout.addView(weightInt);
         linearLayout.addView(right);
-
         return  linearLayout;
     }
 }

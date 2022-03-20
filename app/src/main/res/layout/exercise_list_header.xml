@@ -24,11 +24,12 @@
         android:padding="8dp"
         android:textSize="16dp"
         android:textStyle="bold"
-        tools:text="New Delhi" />
+        tools:text="New Delhi"
+        android:textColor="@color/white"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/purple_200" />
+        android:background="@color/dark" />
 </RelativeLayout>

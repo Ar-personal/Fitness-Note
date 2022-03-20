@@ -1,5 +1,6 @@
 package com.reitech.gym.ui.tracker;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -133,22 +134,21 @@ public class TrackerFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void readData() {
+    File folder = new File(getView().getContext().getExternalFilesDir(null) + "/fitboost");
 
-        @RequiresApi(api = Build.VERSION_CODES.O)
-        private void readData() {
-        File folder = new File(getView().getContext().getExternalFilesDir(null) + "/fitboost");
-
-        final String trackedWorkouts = folder.toString() + "/" + "workouts.csv";
-                try {
-                    CSVReader csvReader = new CSVReader(new FileReader(trackedWorkouts));
-                    List<String[]> workouts = csvReader.readAll();
-                    for(String[] line : workouts)
-                        if(LocalDate.parse(line[0]).equals(date)){
-                            setWorkout(line[1], line, true);
-                        }
-                } catch (IOException | CsvException e) {
-                    e.printStackTrace();
-                }
+    final String trackedWorkouts = folder.toString() + "/" + "workouts.csv";
+            try {
+                CSVReader csvReader = new CSVReader(new FileReader(trackedWorkouts));
+                List<String[]> workouts = csvReader.readAll();
+                for(String[] line : workouts)
+                    if(LocalDate.parse(line[0]).equals(date)){
+                        setWorkout(line[1], line, true);
+                    }
+            } catch (IOException | CsvException e) {
+                e.printStackTrace();
+            }
     }
 
     public LinearLayout getWorkoutLayout(String workout){
@@ -174,27 +174,37 @@ public class TrackerFragment extends Fragment {
 
     public void addWorkout(String workout){
         LinearLayout parent = createWorkoutLayout();
-
+        parent.setBackgroundResource(R.drawable.borderless_radial_corner);
         LinearLayout.LayoutParams internalParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
-        internalParams.setMargins(5,5,5,5);
+        internalParams.setMargins(10,5,10,5);
 
         LinearLayout child1 = new LinearLayout(getContext());
         child1.setLayoutParams(internalParams);
         child1.setOrientation(LinearLayout.HORIZONTAL);
         child1.setWeightSum(1);
+        child1.setBackgroundColor(getResources().getColor(R.color.background));
         TextView excerciseName = new TextView(getContext());
         excerciseName.setText(workout);
+        excerciseName.setTextColor(getResources().getColor(R.color.white));
+        excerciseName.setTextSize(20);
         excerciseName.setId(R.id.workout_name);
         excerciseName.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         excerciseName.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+        child1.setBackgroundResource(R.drawable.home_border_dark);
         child1.addView(excerciseName);
+
+        LinearLayout divider = new LinearLayout(getContext());
+        LinearLayout.LayoutParams divideParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
+        divider.setLayoutParams(divideParams);
+        divider.setBackground(getResources().getDrawable(R.drawable.underlined));
 
 
         LinearLayout child2 = new LinearLayout(getContext());
         child2.setLayoutParams(internalParams);
         child2.setWeightSum(3);
         child2.setOrientation(LinearLayout.HORIZONTAL);
+        child2.setBackgroundResource(R.drawable.home_border_dark);
 
         TextView trophy = new TextView(getContext());
         trophy.setText("PR");
@@ -219,29 +229,26 @@ public class TrackerFragment extends Fragment {
         child2.addView(repsTitle);
 
         parent.addView(child1);
+        parent.addView(divider);
         parent.addView(child2);
 
         LinearLayout root = getView().findViewById(R.id.workoutHolder);
         root.addView(parent);
 
-
-        excerciseName.setTextColor(Color.WHITE);
         excerciseName.setTypeface(excerciseName.getTypeface(), Typeface.BOLD);
-        trophy.setTextColor(Color.WHITE);
-        weightTitle.setTextColor(Color.WHITE);
-        repsTitle.setTextColor(Color.WHITE);
+        trophy.setTextColor(getResources().getColor(R.color.white));
+        weightTitle.setTextColor(getResources().getColor(R.color.white));
+        repsTitle.setTextColor(getResources().getColor(R.color.white));
 
     }
 
     public LinearLayout createWorkoutLayout(){
         LinearLayout parent = new LinearLayout(getContext());
         LinearLayout.LayoutParams firstParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        firstParams.setMargins(0, 50, 5, 5);
-        firstParams.setMarginStart(15);
-        firstParams.setMarginEnd(15);
+        firstParams.setMargins(15, 70, 15, 10);
         parent.setLayoutParams(firstParams);
         parent.setOrientation(LinearLayout.VERTICAL);
-        parent.setBackgroundResource(R.drawable.home_border_dark);
+        parent.setBackgroundResource(R.drawable.borderless_radial_corner);
         return parent;
     }
 
@@ -254,31 +261,72 @@ public class TrackerFragment extends Fragment {
         LinearLayout workoutLine = new LinearLayout(getContext());
         workoutLine.setWeightSum(3);
         workoutLine.setOrientation(LinearLayout.HORIZONTAL);
+        workoutLine.setBackgroundResource(R.drawable.borderless_radial_corner);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+        params.setMargins(30,5,30,15);
+
 
         TextView trophy = new TextView(getContext());
         trophy.setText("trophy");
         trophy.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        trophy.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
-        trophy.setTextColor(Color.WHITE);
+        trophy.setLayoutParams(params);
+        trophy.setTextColor(getResources().getColor(R.color.white));
 
         TextView weight = new TextView(getContext());
+        weight.setId(R.id.weight);
         weight.setText(workoutCSVLine[3] + " Kgs");
         weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        weight.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
-        weight.setTextColor(Color.WHITE);
+        weight.setLayoutParams(params);
+        weight.setTextColor(getResources().getColor(R.color.white));
 
         TextView reps = new TextView(getContext());
+        reps.setId(R.id.reps);
         reps.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         reps.setText(workoutCSVLine[4]);
-        reps.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
-        reps.setTextColor(Color.WHITE);
+        reps.setLayoutParams(params);
+        reps.setTextColor(getResources().getColor(R.color.white));
 
         workoutLine.addView(trophy);
         workoutLine.addView(weight);
         workoutLine.addView(reps);
 
+
+        LinearLayout divider = new LinearLayout(getContext());
+        LinearLayout.LayoutParams divideParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
+        divider.setLayoutParams(divideParams);
+        divider.setBackground(getResources().getDrawable(R.drawable.item_underlined));
+        parent.addView(divider);
         parent.addView(workoutLine);
+
+
     }
+
+    public List<String[]> getExerciseLinesFromExercise(String workoutName){
+        LinearLayout layout = getWorkoutLayout(workoutName);
+        List<String[]> lines = new ArrayList<>();
+        if (layout !=null){
+            for (int i = 0; i < layout.getChildCount(); i++){
+                String[] row = new String[3];
+                //if layout holds line text?
+                TextView weight = (TextView) layout.getChildAt(i).findViewById(R.id.weight);
+                TextView reps = (TextView) layout.getChildAt(i).findViewById(R.id.reps);
+
+                //some children may not be textviews?
+                if(weight == null || reps == null){
+                    continue;
+                }
+                //workout line found
+                row[1] = weight.getText().toString();
+                row[2] = reps.getText().toString();
+
+                lines.add(row);
+                continue;
+            }
+        }
+        return lines;
+    }
+
+
 
 
     public static String getReadableDate(final int date){
