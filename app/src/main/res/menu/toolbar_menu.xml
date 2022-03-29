@@ -2,11 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+<!--    <item-->
+<!--        android:id="@+id/navigation_deleteRow"-->
+<!--        android:icon="@drawable/ic_baseline_delete"-->
+<!--        android:title="delete"-->
+<!--        app:showAsAction="always"-->
+<!--        android:visible="true"/>-->
+
     <item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/title_programs"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"
+        android:orderInCategory="2"/>
+
+
 
 
 </menu>

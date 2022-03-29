@@ -49,7 +49,7 @@ public class WorkoutInputFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_workout_input, container, false);
-        ;
+
 
 
 
@@ -207,7 +207,7 @@ public class WorkoutInputFragment extends Fragment {
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
-                i -= 2.5;
+                i += 2.5;
                 weightInt.setText(Double.toString(i));
 
             }

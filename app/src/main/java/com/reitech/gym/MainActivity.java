@@ -7,14 +7,18 @@ import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -31,6 +35,7 @@ import com.opencsv.CSVWriter;
 import com.reitech.gym.databinding.ActivityMainBinding;
 import com.reitech.gym.ui.calendar.CalendarAdapter;
 import com.reitech.gym.ui.home.HomeFragment;
+import com.reitech.gym.ui.settings.SettingsFragment;
 import com.reitech.gym.ui.tracker.TrackerFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +52,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity{
 
     private ActivityMainBinding binding;
-
+    public Toolbar toolbar;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -65,6 +70,13 @@ public class MainActivity extends AppCompatActivity{
         Fragment homeFragment = new HomeFragment();
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.nav_host_fragment_activity_main, homeFragment).addToBackStack(null).commit();
+
+        toolbar = findViewById(R.id.main_toolbar);
+        toolbar.setOnMenuItemClickListener(item -> {
+            Fragment settings = new SettingsFragment();
+            getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_activity_main, settings, "SETTINGS").addToBackStack(null).commit();
+            return true;
+        });
     }
 
 
@@ -90,11 +102,28 @@ public class MainActivity extends AppCompatActivity{
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-
     }
 
-//    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigation_settings:
+                Fragment settings = new SettingsFragment();
+                getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_activity_main, settings, "SETTINGS").addToBackStack(null).commit();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    //    @RequiresApi(api = Build.VERSION_CODES.O)
 //    @Override
 //    protected void onResume() {
 //        super.onResume();

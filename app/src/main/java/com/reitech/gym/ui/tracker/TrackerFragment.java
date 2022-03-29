@@ -1,33 +1,42 @@
 package com.reitech.gym.ui.tracker;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.ItemTouchUIUtil;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
-import com.opencsv.exceptions.CsvValidationException;
+import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
 import com.reitech.gym.ui.exerciselist.AddExerciseFragment;
 
-import org.w3c.dom.Text;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileReader;
@@ -41,20 +50,53 @@ import java.util.List;
 public class TrackerFragment extends Fragment {
 
     private LocalDate date;
+    private boolean deleteIcon = false;
+    private Menu menu;
+    private MenuItem delete;
+    private List<LinearLayout> layoutsToDelete;
+    private LinearLayout root;
 
     public TrackerFragment(LocalDate date){
         super(R.layout.fragment_tracker);
         this.date = date;
     }
 
+    //need for delete icon on toolbar
+    @Override
+    public void onCreate(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+        Toolbar toolbar = ((MainActivity) getActivity()).toolbar;
+        toolbar.inflateMenu(R.menu.toolbar_menu);
+        ((MainActivity) getActivity()).setSupportActionBar(toolbar);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-
-
+        setHasOptionsMenu(true);
         TextView trackerDate = view.findViewById(R.id.tackerDate);
         String day = getReadableDate(date.getDayOfMonth());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy");
+
+        RelativeLayout root = view.findViewById(R.id.trackerLayout);
+        ScrollView scrollView = view.findViewById(R.id.scrollView);
+        GestureDetector gestureDetector = new GestureDetector(getActivity(), new MyGestureListener());
+
+        //mainly check for left and right swipes for day changes
+        root.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
+
+        scrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
 
         trackerDate.setText(day + " " + date.format(formatter));
 
@@ -64,10 +106,7 @@ public class TrackerFragment extends Fragment {
         trackerLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocalDate yesterday = date.minusDays(1);
-                Fragment trackerFragment = new TrackerFragment(yesterday);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+                goToYesterday();
             }
         });
 
@@ -76,10 +115,7 @@ public class TrackerFragment extends Fragment {
         trackerRight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LocalDate tomorrow = date.plusDays(1);
-                Fragment trackerFragment = new TrackerFragment(tomorrow);
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+                goToTomorrow();
             }
         });
         
@@ -95,6 +131,22 @@ public class TrackerFragment extends Fragment {
             }
 
         });
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void goToYesterday(){
+        LocalDate yesterday = date.minusDays(1);
+        Fragment trackerFragment = new TrackerFragment(yesterday);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void goToTomorrow(){
+        LocalDate tomorrow = date.plusDays(1);
+        Fragment trackerFragment = new TrackerFragment(tomorrow);
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
     }
 
     public void setWorkout(String workoutName, String[] workoutList, boolean loaded){
@@ -168,7 +220,6 @@ public class TrackerFragment extends Fragment {
                 return l;
             }
         }
-
         return l;
     }
 
@@ -198,7 +249,6 @@ public class TrackerFragment extends Fragment {
         LinearLayout.LayoutParams divideParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 10);
         divider.setLayoutParams(divideParams);
         divider.setBackground(getResources().getDrawable(R.drawable.underlined));
-
 
         LinearLayout child2 = new LinearLayout(getContext());
         child2.setLayoutParams(internalParams);
@@ -239,7 +289,6 @@ public class TrackerFragment extends Fragment {
         trophy.setTextColor(getResources().getColor(R.color.white));
         weightTitle.setTextColor(getResources().getColor(R.color.white));
         repsTitle.setTextColor(getResources().getColor(R.color.white));
-
     }
 
     public LinearLayout createWorkoutLayout(){
@@ -252,7 +301,6 @@ public class TrackerFragment extends Fragment {
         return parent;
     }
 
-
     private void addWorkoutLine(String[] workoutCSVLine, LinearLayout parent){
         //Date,Exercise,Category,Weight (kgs),Reps,Distance,Distance Unit,Time
 
@@ -264,7 +312,6 @@ public class TrackerFragment extends Fragment {
         workoutLine.setBackgroundResource(R.drawable.borderless_radial_corner);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
         params.setMargins(30,5,30,15);
-
 
         TextView trophy = new TextView(getContext());
         trophy.setText("trophy");
@@ -290,13 +337,56 @@ public class TrackerFragment extends Fragment {
         workoutLine.addView(weight);
         workoutLine.addView(reps);
 
-
         LinearLayout divider = new LinearLayout(getContext());
         LinearLayout.LayoutParams divideParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
         divider.setLayoutParams(divideParams);
         divider.setBackground(getResources().getDrawable(R.drawable.item_underlined));
         parent.addView(divider);
         parent.addView(workoutLine);
+
+        //detect if the user wants to delete a workout line with long press
+        workoutLine.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(!deleteIcon){
+                    layoutsToDelete = new ArrayList<>();
+                    layoutsToDelete.add(workoutLine);
+                    workoutLine.setBackgroundColor(getResources().getColor(R.color.negative));
+                    showDelete();
+                }
+                return true;
+            }
+        });
+
+        //code to delete a workout line based on if the long press to delete has been done
+        workoutLine.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!deleteIcon){
+                    return;
+                }else{
+                    if(layoutsToDelete != null){
+                        int color = Color.TRANSPARENT;
+                        Drawable background = workoutLine.getBackground();
+                        if (background instanceof ColorDrawable)
+                            color = ((ColorDrawable) background).getColor();
+                        //check if the view is selected already as it will have red delete background visuals
+                        if(color == getResources().getColor(R.color.negative)){
+                            layoutsToDelete.remove(workoutLine);
+                            workoutLine.setBackgroundColor(getResources().getColor(R.color.background));
+                            //cancel delete user has removed all objects
+                            if(layoutsToDelete.size() == 0){
+                                hideDelete();
+                            }
+                        }else{
+                            layoutsToDelete.add(workoutLine);
+                            workoutLine.setBackgroundColor(getResources().getColor(R.color.negative));
+                        }
+                    }
+                }
+            }
+        });
+
 
 
     }
@@ -326,9 +416,6 @@ public class TrackerFragment extends Fragment {
         return lines;
     }
 
-
-
-
     public static String getReadableDate(final int date){
         String suffix = "th";
         switch (date){
@@ -347,6 +434,103 @@ public class TrackerFragment extends Fragment {
                 break;
         }
         return date + suffix;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull @NotNull Menu menu, @NonNull @NotNull MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar_tracker, menu);
+        delete = menu.findItem(R.id.navigation_deleteRow);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull @NotNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.navigation_deleteRow:
+                deleteRows();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+
+    }
+
+    public void hideDelete(){
+        delete.setVisible(false);
+        deleteIcon = false;
+    }
+
+    public void showDelete(){
+        delete.setVisible(true);
+        deleteIcon = true;
+    }
+
+    public void deleteRows(){
+        if(layoutsToDelete == null){
+            System.err.println("why is delete list null tho");
+            return;
+        }
+
+        for(LinearLayout l : layoutsToDelete){
+            LinearLayout parent = (LinearLayout) l.getParent();
+            try {
+                parent.removeAllViews();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        hideDelete();
+
+    }
+
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+
+        @Override
+        public boolean onDown(MotionEvent event) {
+            Log.d("TAG","onDown: ");
+            return true;
+        }
+
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            Log.i("TAG", "onSingleTapConfirmed: ");
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            Log.i("TAG", "onLongPress: ");
+            return;
+        }
+
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            Log.i("TAG", "onDoubleTap: ");
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                                float distanceX, float distanceY) {
+            Log.i("TAG", "onScroll: ");
+            return true;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        public boolean onFling(MotionEvent event1, MotionEvent event2,
+                               float velocityX, float velocityY) {
+            Log.d("TAG", "onFling: ");
+            if(velocityX > 0){
+                goToYesterday();
+            }else{
+                goToTomorrow();
+            }
+
+            return true;
+        }
     }
 
 }

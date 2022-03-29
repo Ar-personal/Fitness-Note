@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -20,6 +21,7 @@ import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
 import com.reitech.gym.databinding.FragmentHomeBinding;
 import com.reitech.gym.ui.calendar.CalendarAdapter;
+import com.reitech.gym.ui.settings.SettingsFragment;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -45,6 +47,10 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         monthYearText = binding.monthYear;
         calendarRecyclerView = binding.calendarRecyclerView;
         initWidgets();
+
+
+
+
         return root;
     }
 
