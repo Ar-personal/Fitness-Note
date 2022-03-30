@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.reitech.gym.R;
+import com.reitech.gym.ui.data.WorkoutLine;
 import com.reitech.gym.ui.tracker.TrackerFragment;
 import com.reitech.gym.ui.tracker.Workout;
 import com.reitech.gym.ui.tracker.WorkoutInputFragment;
@@ -121,6 +122,7 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onItemRootViewClicked(@NonNull final ExerciseSection section, final int itemAdapterPosition, final String exerciseName){
 
@@ -128,10 +130,11 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
 
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
         TrackerFragment trackerFragment = (TrackerFragment) f;
-        List<String[]> toAdd = trackerFragment.getExerciseLinesFromExercise(exerciseName);
+        List<WorkoutLine> toAdd = trackerFragment.getExerciseLinesFromExercise(exerciseName);
+
         Bundle bundle = new Bundle();
         for(int i = 0; i < toAdd.size(); i++){
-            bundle.putStringArray("list" + i, toAdd.get(i));
+            bundle.putSerializable("list" + i, toAdd.get(i));
         }
 
         workout.setArguments(bundle);

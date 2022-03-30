@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,6 +35,8 @@ import com.opencsv.CSVWriter;
 import com.opencsv.exceptions.CsvException;
 import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
+import com.reitech.gym.ui.data.Workout;
+import com.reitech.gym.ui.data.WorkoutLine;
 import com.reitech.gym.ui.exerciselist.AddExerciseFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -42,10 +45,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class TrackerFragment extends Fragment {
 
@@ -83,6 +88,8 @@ public class TrackerFragment extends Fragment {
         ScrollView scrollView = view.findViewById(R.id.scrollView);
         GestureDetector gestureDetector = new GestureDetector(getActivity(), new MyGestureListener());
 
+        readFromDatabase();
+
         //mainly check for left and right swipes for day changes
         root.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -100,7 +107,7 @@ public class TrackerFragment extends Fragment {
 
         trackerDate.setText(day + " " + date.format(formatter));
 
-        readData();
+
 
         ImageView trackerLeft = view.findViewById(R.id.trackerLeft);
         trackerLeft.setOnClickListener(new View.OnClickListener() {
@@ -149,25 +156,40 @@ public class TrackerFragment extends Fragment {
                 .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
     }
 
-    public void setWorkout(String workoutName, String[] workoutList, boolean loaded){
-        //user wants to add workout specific data to tracker
-        //multiple lines may been to be added to existing or non existant layout
-        LinearLayout linearLayout = getWorkoutLayout(workoutName);
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        public void setWorkout(WorkoutLine wl, boolean loaded){
+        LinearLayout linearLayout = getWorkoutLayout(wl.exerciseName);
 
+        //check of workout exists as part of the GUI already
         if(linearLayout == null){
-            addWorkout(workoutName);
-            linearLayout = getWorkoutLayout(workoutName);
+            addWorkout(wl.exerciseName);
+            linearLayout = getWorkoutLayout(wl.exerciseName);
         }
 
-         addWorkoutLine(workoutList, linearLayout);
-        //infite loading and writing if we dont do this?
+         addWorkoutLine(wl, linearLayout);
         if(!loaded) {
-            saveData(workoutName, workoutList, date);
+            addWorkoutToDatabase(wl, date);
         }
 
 
-        //save here?
+    }
 
+    private void addWorkoutToDatabase(WorkoutLine wl, LocalDate date) {
+        new Thread(() ->{
+            Workout.WorkoutDao workoutDao = ((MainActivity)getActivity()).workoutDao;
+            Workout workout = new Workout();
+            workout.date = date.toString();
+            workout.exerciseName = wl.exerciseName;
+
+            //optional inputs
+            try {
+                workout.weight = wl.weight;
+                workout.reps = wl.reps;
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            workoutDao.insertWorkout(workout);
+        }).start();
     }
 
     //Date,Exercise,Category,Weight (kgs),Reps,Distance,Distance Unit,Time
@@ -182,26 +204,54 @@ public class TrackerFragment extends Fragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void readData() {
-    File folder = new File(getView().getContext().getExternalFilesDir(null) + "/fitboost");
+    private void readFromDatabase(){
+            Workout.WorkoutDao workoutDao = ((MainActivity)getActivity()).workoutDao;
+            List<Workout> dayWorkouts = workoutDao.getWorkoutsFromDate(date.toString());
 
-    final String trackedWorkouts = folder.toString() + "/" + "workouts.csv";
-            try {
-                CSVReader csvReader = new CSVReader(new FileReader(trackedWorkouts));
-                List<String[]> workouts = csvReader.readAll();
-                for(String[] line : workouts)
-                    if(LocalDate.parse(line[0]).equals(date)){
-                        setWorkout(line[1], line, true);
+            Executors.newSingleThreadExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    for(int i = 0; i < dayWorkouts.size(); i++) {
+                        WorkoutLine workoutLine = new WorkoutLine();
+                        try {
+                            workoutLine.wid = dayWorkouts.get(i).wid;
+                            workoutLine.date = dayWorkouts.get(i).date;
+                            workoutLine.exerciseName = dayWorkouts.get(i).exerciseName;
+                            workoutLine.category = dayWorkouts.get(i).category;
+                            workoutLine.weight = dayWorkouts.get(i).weight;
+                            workoutLine.reps = dayWorkouts.get(i).reps;
+                            workoutLine.distance = dayWorkouts.get(i).distance;
+                            workoutLine.distanceUnit = dayWorkouts.get(i).distanceUnit;
+                            setWorkout(workoutLine, true);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        //check if a valid exercise is being loaded e.g. empty or not
+
+
                     }
-            } catch (IOException | CsvException e) {
-                e.printStackTrace();
-            }
+                }
+            });
     }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+//    private void readCSVData() {
+//    File folder = new File(getView().getContext().getExternalFilesDir(null) + "/fitboost");
+//
+//    final String trackedWorkouts = folder.toString() + "/" + "workouts.csv";
+//            try {
+//                CSVReader csvReader = new CSVReader(new FileReader(trackedWorkouts));
+//                List<String[]> workouts = csvReader.readAll();
+//                for(String[] line : workouts)
+//                    if(LocalDate.parse(line[0]).equals(date)){
+//                    }
+//            } catch (IOException | CsvException e) {
+//                e.printStackTrace();
+//            }
+//    }
 
     public LinearLayout getWorkoutLayout(String workout){
         LinearLayout l = null;
@@ -213,13 +263,20 @@ public class TrackerFragment extends Fragment {
         }
 
         //trying to add a category that exists on the workout tracker already so don't add it
-        for (TextView t : loadedTextViews){
-            if(t.getText().toString().toLowerCase().equals(workout.toString().toLowerCase())){
-                //maybe close the list fragment and scroll the user to the correct workout they are trying to add
-                l = (LinearLayout) t.getParent().getParent();
-                return l;
-            }
+        if(loadedTextViews.size() <= 0) {
+            return l;
         }
+
+            for (TextView t : loadedTextViews) {
+                if(t == null)
+                    return l;
+                if (t.getText().toString().toLowerCase().equals(workout.toLowerCase())) {
+                    //maybe close the list fragment and scroll the user to the correct workout they are trying to add
+                    l = (LinearLayout) t.getParent().getParent();
+                    return l;
+                }
+            }
+
         return l;
     }
 
@@ -301,12 +358,21 @@ public class TrackerFragment extends Fragment {
         return parent;
     }
 
-    private void addWorkoutLine(String[] workoutCSVLine, LinearLayout parent){
+    private void addWorkoutLine(WorkoutLine wl, LinearLayout parent){
         //Date,Exercise,Category,Weight (kgs),Reps,Distance,Distance Unit,Time
 
         // TODO: 17/03/2022 change complete reinstantiation of entire workout
 
         LinearLayout workoutLine = new LinearLayout(getContext());
+
+        //if unloaded exercise then it does not exist in database until after this method currently
+        //no id would have been set from reading from database
+        try {
+            workoutLine.setId(wl.wid);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
         workoutLine.setWeightSum(3);
         workoutLine.setOrientation(LinearLayout.HORIZONTAL);
         workoutLine.setBackgroundResource(R.drawable.borderless_radial_corner);
@@ -321,7 +387,7 @@ public class TrackerFragment extends Fragment {
 
         TextView weight = new TextView(getContext());
         weight.setId(R.id.weight);
-        weight.setText(workoutCSVLine[3] + " Kgs");
+        weight.setText(wl.weight + " Kgs");
         weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         weight.setLayoutParams(params);
         weight.setTextColor(getResources().getColor(R.color.white));
@@ -329,7 +395,7 @@ public class TrackerFragment extends Fragment {
         TextView reps = new TextView(getContext());
         reps.setId(R.id.reps);
         reps.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        reps.setText(workoutCSVLine[4]);
+        reps.setText(String.valueOf(wl.reps));
         reps.setLayoutParams(params);
         reps.setTextColor(getResources().getColor(R.color.white));
 
@@ -391,12 +457,13 @@ public class TrackerFragment extends Fragment {
 
     }
 
-    public List<String[]> getExerciseLinesFromExercise(String workoutName){
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public ArrayList<WorkoutLine> getExerciseLinesFromExercise(String workoutName){
         LinearLayout layout = getWorkoutLayout(workoutName);
-        List<String[]> lines = new ArrayList<>();
+        ArrayList<WorkoutLine> lines = new ArrayList<>();
         if (layout !=null){
             for (int i = 0; i < layout.getChildCount(); i++){
-                String[] row = new String[3];
+                WorkoutLine workoutLine = new WorkoutLine();
                 //if layout holds line text?
                 TextView weight = (TextView) layout.getChildAt(i).findViewById(R.id.weight);
                 TextView reps = (TextView) layout.getChildAt(i).findViewById(R.id.reps);
@@ -406,10 +473,12 @@ public class TrackerFragment extends Fragment {
                     continue;
                 }
                 //workout line found
-                row[1] = weight.getText().toString();
-                row[2] = reps.getText().toString();
+                String weightText = weight.getText().toString();
+                //remove " kgs"
+                workoutLine.weight = Double.parseDouble(weightText.substring(0, weightText.length() - 4));
+                workoutLine.reps = Integer.parseInt(reps.getText().toString());
 
-                lines.add(row);
+                lines.add(workoutLine);
                 continue;
             }
         }
@@ -474,15 +543,27 @@ public class TrackerFragment extends Fragment {
 
         for(LinearLayout l : layoutsToDelete){
             LinearLayout parent = (LinearLayout) l.getParent();
+
+            deleteWorkoutFromDatabase(l.getId());
+
+
             try {
-                parent.removeAllViews();
+                parent.removeView(l);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-
         hideDelete();
+    }
 
+
+    public void deleteWorkoutFromDatabase(int wid){
+        new Thread(() -> {
+            Workout.WorkoutDao workoutDao = ((MainActivity) getActivity()).workoutDao;
+            workoutDao.deleteById(wid);
+
+
+        }).start();
     }
 
     class MyGestureListener extends GestureDetector.SimpleOnGestureListener {

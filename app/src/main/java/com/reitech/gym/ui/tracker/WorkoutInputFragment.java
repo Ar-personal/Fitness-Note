@@ -2,6 +2,7 @@ package com.reitech.gym.ui.tracker;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -15,12 +16,14 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.reitech.gym.R;
+import com.reitech.gym.ui.data.WorkoutLine;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -34,7 +37,7 @@ public class WorkoutInputFragment extends Fragment {
     private LinearLayout root;
     private Button save, clear;
     private EditText first, second;
-    private List<String[]> workoutHistory;
+    private List<WorkoutLine> workoutHistory;
     private RecyclerView workoutInputList;
     private String workoutName;
 
@@ -49,9 +52,6 @@ public class WorkoutInputFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_workout_input, container, false);
-
-
-
 
         root = view.findViewById(R.id.workout_input_layout);
         save = view.findViewById(R.id.saveButton);
@@ -68,48 +68,51 @@ public class WorkoutInputFragment extends Fragment {
         workoutInputList.setAdapter(workoutInputAdapter);
 
         //start gathering old workout history of the day
-        List<String[]> lines = new ArrayList<>();
+        List<WorkoutLine> lines = new ArrayList<>();
         Bundle bundle = getArguments();
         if(bundle != null){
             for(String key : bundle.keySet()){
                 if(key.contains("list"))
-                    lines.add((String[]) bundle.get(key));
+                    lines.add((WorkoutLine) bundle.get(key));
             }
         }
         //add older workouts to recycler view
         // TODO: 20/03/2022 unify string indices across the board 
         for(int i = 0; i < lines.size(); i++){
-            String[] toAdd = new String[8];
-            String[] iterator = lines.get(i);
-            toAdd[3] = iterator[1];
-            toAdd[4] = iterator[2];
-            workoutHistory.add(toAdd);
+            //to add is the order the text is added to the adapter
+            WorkoutLine workoutLine = new WorkoutLine();
+            //iterator is simple list of bundled data weight at 1 reps at 2
+            workoutLine.distanceUnit = lines.get(i).distanceUnit;
+            workoutLine.distance = lines.get(i).distance;
+            workoutLine.weight = lines.get(i).weight;
+            workoutLine.reps = lines.get(i).reps;
+            workoutLine.time = lines.get(i).time;
+
+            workoutHistory.add(workoutLine);
             workoutInputAdapter.notifyDataSetChanged();
         }
 
 
         save.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View view) {
-                String[] line = new String[8];
+                WorkoutLine workoutLine = new WorkoutLine();
                 //trophy code needs to be handled here
-                line[2] = "trophy";
-                line[3] = first.getText().toString();
-                line[4] = second.getText().toString();
-                //time units for now
-                line[5] = "";
-                line[6] = "";
-                line[7] = "";
+                workoutLine.exerciseName = workoutName;
+                workoutLine.weight = Double.parseDouble(first.getText().toString());
+                workoutLine.reps = Integer.parseInt(second.getText().toString());
+
 
                 if(!first.getText().toString().isEmpty() && !second.getText().toString().isEmpty()){
-                    workoutHistory.add(line);
+                    workoutHistory.add(workoutLine);
 
                     Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
 
                     workoutInputAdapter.notifyDataSetChanged();
 
                     TrackerFragment trackerFragment = (TrackerFragment) f;
-                    trackerFragment.setWorkout(workoutName, line, false);
+                    trackerFragment.setWorkout(workoutLine, false);
                 }
             }
         });

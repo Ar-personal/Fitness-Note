@@ -30,10 +30,14 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import com.opencsv.CSVWriter;
 import com.reitech.gym.databinding.ActivityMainBinding;
 import com.reitech.gym.ui.calendar.CalendarAdapter;
+import com.reitech.gym.ui.data.AppDatabase;
+import com.reitech.gym.ui.data.LocalDateTimeConverter;
+import com.reitech.gym.ui.data.Workout;
 import com.reitech.gym.ui.home.HomeFragment;
 import com.reitech.gym.ui.settings.SettingsFragment;
 import com.reitech.gym.ui.tracker.TrackerFragment;
@@ -48,11 +52,13 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity{
 
     private ActivityMainBinding binding;
     public Toolbar toolbar;
+    public Workout.WorkoutDao workoutDao;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -60,10 +66,13 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         checkPermission();
 
+
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 //        getSupportActionBar().hide();
 
+        dataBaseSetup();
         savedDataSetup();
 
 
@@ -79,6 +88,13 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
+    private void dataBaseSetup(){
+        new Thread(() ->{
+            AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "fitboost_db").allowMainThreadQueries().build();
+            workoutDao = db.userDao();
+            List<Workout> l = workoutDao.getAll();
+        }).start();
+    }
 
     private void savedDataSetup() {
         File folder = new File(getApplicationContext().getExternalFilesDir(null) + "/fitboost");

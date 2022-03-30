@@ -11,15 +11,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.reitech.gym.R;
+import com.reitech.gym.ui.data.WorkoutLine;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class WorkoutInputAdapter extends RecyclerView.Adapter<WorkoutViewHolder>{
-    List<String[]> lines;
+    List<WorkoutLine> lines;
 
-    public WorkoutInputAdapter(List<String[]> lines) {
+    public WorkoutInputAdapter(List<WorkoutLine> lines) {
         this.lines = lines;
     }
 
@@ -35,10 +36,10 @@ public class WorkoutInputAdapter extends RecyclerView.Adapter<WorkoutViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull WorkoutViewHolder holder, int position) {
-        String[] list = lines.get(position);
-        holder.trophy.setText(list[2]);
-        holder.first.setText(list[3]);
-        holder.second.setText(list[4]);
+        WorkoutLine list = lines.get(position);
+        holder.trophy.setText(String.valueOf(list.wid));
+        holder.first.setText(String.valueOf(list.weight));
+        holder.second.setText(String.valueOf(list.reps));
     }
 
     @Override
