@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,13 +33,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import com.google.android.material.navigation.NavigationView;
 import com.opencsv.CSVWriter;
 import com.reitech.gym.databinding.ActivityMainBinding;
 import com.reitech.gym.ui.calendar.CalendarAdapter;
 import com.reitech.gym.ui.data.AppDatabase;
+import com.reitech.gym.ui.data.ExerciseListSetup;
 import com.reitech.gym.ui.data.LocalDateTimeConverter;
 import com.reitech.gym.ui.data.Workout;
 import com.reitech.gym.ui.home.HomeFragment;
+import com.reitech.gym.ui.programs.DashboardFragment;
 import com.reitech.gym.ui.settings.SettingsFragment;
 import com.reitech.gym.ui.tracker.TrackerFragment;
 
@@ -54,7 +58,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemReselectedListener{
 
     private ActivityMainBinding binding;
     public Toolbar toolbar;
@@ -66,12 +70,11 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         checkPermission();
 
-
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-//        getSupportActionBar().hide();
 
+//        getSupportActionBar().hide();
+        new ExerciseListSetup();
         dataBaseSetup();
         savedDataSetup();
 
@@ -86,6 +89,25 @@ public class MainActivity extends AppCompatActivity{
             getSupportFragmentManager().beginTransaction().add(R.id.nav_host_fragment_activity_main, settings, "SETTINGS").addToBackStack(null).commit();
             return true;
         });
+
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.main_nav);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.navigation_home:
+                        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, homeFragment).commit();
+                        break;
+                    case R.id.navigation_programs:
+                        getSupportFragmentManager().beginTransaction().remove(homeFragment).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, new DashboardFragment()).commit();
+                        break;
+                }
+                return true;
+            }
+        });
+
     }
 
     private void dataBaseSetup(){
@@ -137,6 +159,11 @@ public class MainActivity extends AppCompatActivity{
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onNavigationItemReselected(@NonNull @NotNull MenuItem item) {
+
     }
 
     //    @RequiresApi(api = Build.VERSION_CODES.O)

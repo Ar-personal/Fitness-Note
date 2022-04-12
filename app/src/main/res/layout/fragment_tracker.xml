@@ -79,36 +79,16 @@
         android:id="@+id/fab_add_exercise"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/scrollView"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="-45dp"
+        android:layout_marginBottom="5dp"
         android:backgroundTint="@color/positive"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_baseline_add_24" />
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:backgroundTint="@color/black"
-            app:itemIconTint="@color/background"
-            app:itemTextColor="@color/background"
-            app:menu="@menu/bottom_nav_menu" />
-
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
 </RelativeLayout>
+
+
 
 

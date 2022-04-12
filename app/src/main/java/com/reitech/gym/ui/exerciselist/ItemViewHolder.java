@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.reitech.gym.R;
+import com.reitech.gym.ui.tracker.Workout;
 
 class ItemViewHolder extends RecyclerView.ViewHolder{
     final ImageView imgItem;

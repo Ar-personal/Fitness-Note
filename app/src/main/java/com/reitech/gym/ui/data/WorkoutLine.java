@@ -24,7 +24,7 @@ public class WorkoutLine implements Serializable {
 
     public String distanceUnit;
 
-    public Double time;
+    public String time;
 
 
 

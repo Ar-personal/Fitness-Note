@@ -4,4 +4,7 @@
     <item name="workout_name" type="id"/>
     <item name="weight" type="id"/>
     <item name="reps" type="id"/>
+    <item name="time" type="id"/>
+    <item name="distance" type="id"/>
+    <item name="unit" type="id"/>
 </resources>

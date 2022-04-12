@@ -8,10 +8,12 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -36,14 +38,14 @@ public class WorkoutInputFragment extends Fragment {
     private boolean empty;
     private LinearLayout root;
     private Button save, clear;
-    private EditText first, second;
+    private EditText weight, reps, hour, minute, second, distance;
+    private Spinner unit;
     private List<WorkoutLine> workoutHistory;
     private RecyclerView workoutInputList;
     private String workoutName;
 
     public WorkoutInputFragment(String workoutName, Workout.WorkoutEnum type) {
         this.type = type;
-        this.empty = empty;
         this.workoutName = workoutName;
     }
 
@@ -56,8 +58,7 @@ public class WorkoutInputFragment extends Fragment {
         root = view.findViewById(R.id.workout_input_layout);
         save = view.findViewById(R.id.saveButton);
         clear = view.findViewById(R.id.clearButton);
-        first = new EditText(getContext());
-        second = new EditText(getContext());
+
         createLayout();
 
         workoutHistory = new ArrayList<>();
@@ -87,6 +88,7 @@ public class WorkoutInputFragment extends Fragment {
             workoutLine.weight = lines.get(i).weight;
             workoutLine.reps = lines.get(i).reps;
             workoutLine.time = lines.get(i).time;
+            workoutLine.category = lines.get(i).category;
 
             workoutHistory.add(workoutLine);
             workoutInputAdapter.notifyDataSetChanged();
@@ -100,19 +102,70 @@ public class WorkoutInputFragment extends Fragment {
                 WorkoutLine workoutLine = new WorkoutLine();
                 //trophy code needs to be handled here
                 workoutLine.exerciseName = workoutName;
-                workoutLine.weight = Double.parseDouble(first.getText().toString());
-                workoutLine.reps = Integer.parseInt(second.getText().toString());
+                switch (type){
+                    case WEIGHT_AND_REPS:
+                        workoutLine.weight = Double.parseDouble(weight.getText().toString());
+                        workoutLine.reps = Integer.parseInt(reps.getText().toString());
+                        workoutLine.category = "WEIGHT_AND_REPS";
 
+                        if(!weight.getText().toString().isEmpty() || !reps.getText().toString().isEmpty()){
+                            workoutHistory.add(workoutLine);
 
-                if(!first.getText().toString().isEmpty() && !second.getText().toString().isEmpty()){
-                    workoutHistory.add(workoutLine);
+                            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
 
-                    Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
+                            workoutInputAdapter.notifyDataSetChanged();
 
-                    workoutInputAdapter.notifyDataSetChanged();
+                            TrackerFragment trackerFragment = (TrackerFragment) f;
+                            trackerFragment.setWorkout(workoutLine, false);
+                        }
+                        break;
+                    case WEIGHT_AND_TIME:
+                        workoutLine.weight = Double.parseDouble(weight.getText().toString());
+                        String time = "";
+                        time += hour.getText().toString().trim();
+                        time += ":";
+                        time += minute.getText().toString().trim();
+                        time += ":";
+                        time += second.getText().toString().trim();
+                        workoutLine.time = time;
+                        workoutLine.category = "WEIGHT_AND_TIME";
 
-                    TrackerFragment trackerFragment = (TrackerFragment) f;
-                    trackerFragment.setWorkout(workoutLine, false);
+                        if(!weight.getText().toString().isEmpty()){
+                            workoutHistory.add(workoutLine);
+
+                            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
+
+                            workoutInputAdapter.notifyDataSetChanged();
+
+                            TrackerFragment trackerFragment = (TrackerFragment) f;
+                            trackerFragment.setWorkout(workoutLine, false);
+                        }
+
+                        break;
+                    case TIME_AND_DISTANCE:
+                        String t = "";
+                        t += hour.getText().toString().trim();
+                        t += ":";
+                        t += minute.getText().toString().trim();
+                        t += ":";
+                        t += second.getText().toString().trim();
+                        workoutLine.time = t;
+                        workoutLine.distance = Double.parseDouble(distance.getText().toString().trim());
+                        workoutLine.distanceUnit = unit.getSelectedItem().toString().trim();
+                        workoutLine.category = "TIME_AND_DISTANCE";
+
+                        if(!distance.getText().toString().isEmpty()){
+                            workoutHistory.add(workoutLine);
+
+                            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
+
+                            workoutInputAdapter.notifyDataSetChanged();
+
+                            TrackerFragment trackerFragment = (TrackerFragment) f;
+                            trackerFragment.setWorkout(workoutLine, false);
+                        }
+
+                        break;
                 }
             }
         });
@@ -120,8 +173,28 @@ public class WorkoutInputFragment extends Fragment {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                first.setText("");
-                second.setText("");
+                switch (type){
+                    case WEIGHT_AND_REPS:
+                        weight.setText("");
+                        reps.setText("");
+                        break;
+                    case TIME_AND_DISTANCE:
+                        hour.setText("");
+                        minute.setText("");
+                        second.setText("");
+                        break;
+                    case WEIGHT_AND_TIME:
+                        weight.setText("");
+                        hour.setText("");
+                        minute.setText("");
+                        second.setText("");
+                        break;
+                    case INVERTEDWEIGHT_AND_REPS:
+                        weight.setText("");
+                        reps.setText("");
+                        break;
+                }
+
             }
         });
 
@@ -132,25 +205,66 @@ public class WorkoutInputFragment extends Fragment {
         switch (type){
             case WEIGHT_AND_REPS:
                 createWeightAndRepsLayout();
+                break;
+            case WEIGHT_AND_TIME:
+                createWeightAndTimeLayout();
+                break;
+            case TIME_AND_DISTANCE:
+                createTimeAndDistanceLayout();
+                break;
+            case INVERTEDWEIGHT_AND_REPS:
+                createWeightAndRepsLayout();
+                break;
+            default:
+                createWeightAndRepsLayout();
+                break;
         }
-
-
     }
 
     private void createWeightAndRepsLayout() {
-
+        weight = new EditText(getContext());
+        reps = new EditText(getContext());
         LinearLayout weightLabel = createInputLabel("Weight (Kgs)");
-        LinearLayout weightInput = createIntInputLayout(first);
+        LinearLayout weightInput = createIntInputLayout(weight);
         LinearLayout repsLabel = createInputLabel("Reps");
-        LinearLayout repsInput = createIntInputLayout(second);
-
+        LinearLayout repsInput = createIntInputLayout(reps);
 
         root.addView(weightLabel);
         root.addView(weightInput);
         root.addView(repsLabel);
         root.addView(repsInput);
-
     }
+
+    private void createWeightAndTimeLayout() {
+        weight = new EditText(getContext());
+        LinearLayout weightLabel = createInputLabel("Weight (Kgs)");
+        LinearLayout weightInput = createIntInputLayout(weight);
+        LinearLayout timeLabel = createInputLabel("Time");
+        LinearLayout timeInput = createTimeInputLayout();
+
+        root.addView(weightLabel);
+        root.addView(weightInput);
+        root.addView(timeLabel);
+        root.addView(timeInput);
+    }
+
+    private void createTimeAndDistanceLayout() {
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setWeightSum(3);
+
+
+        LinearLayout timeLabel = createInputLabel("Time");
+        LinearLayout timeInput = createTimeInputLayout();
+        LinearLayout distanceLabel = createInputLabel("Distance");
+        LinearLayout distanceInput = createDistanceInputLayout();
+
+
+        root.addView(timeLabel);
+        root.addView(timeInput);
+        root.addView(distanceLabel);
+        root.addView(distanceInput);
+    }
+
 
     private LinearLayout createInputLabel(String label){
         LinearLayout weight = new LinearLayout(getContext());
@@ -169,7 +283,60 @@ public class WorkoutInputFragment extends Fragment {
         return weight;
     }
 
-    private LinearLayout createIntInputLayout(final EditText weightInt) {
+    private LinearLayout createTimeInputLayout() {
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setWeightSum(3);
+
+        hour = new EditText(getContext());
+        minute = new EditText(getContext());
+        second = new EditText(getContext());
+
+        hour.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+        minute.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+        second.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+
+        hour.setInputType(InputType.TYPE_CLASS_NUMBER);
+        minute.setInputType(InputType.TYPE_CLASS_NUMBER);
+        second.setInputType(InputType.TYPE_CLASS_NUMBER);
+        
+        hour.setHint("hh");
+        minute.setHint("mm");
+        second.setHint("ss");
+
+        linearLayout.addView(hour);
+        linearLayout.addView(minute);
+        linearLayout.addView(second);
+
+        return linearLayout;
+
+    }
+
+    private LinearLayout createDistanceInputLayout() {
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setWeightSum(4);
+
+        LinearLayout gap = new LinearLayout(getContext());
+        distance = new EditText(getContext());
+        unit = new Spinner(getContext());
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.distance_units, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        unit.setAdapter(adapter);
+
+        gap.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+        distance.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+        unit.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+
+        distance.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+        linearLayout.addView(gap);
+        linearLayout.addView(distance);
+        linearLayout.addView(unit);
+
+        return linearLayout;
+    }
+
+    private LinearLayout createIntInputLayout(EditText editText) {
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setWeightSum(4);
 
@@ -178,22 +345,22 @@ public class WorkoutInputFragment extends Fragment {
         left.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
         left.setBackgroundColor(getResources().getColor(R.color.dark));
 
-        weightInt.setText("");
-        weightInt.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        weightInt.setInputType(InputType.TYPE_CLASS_NUMBER);
-        weightInt.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,2.0f));
+        editText.setText("");
+        editText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        editText.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,2.0f));
 
         left.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 double i = 0;
                 try {
-                    i = Double.parseDouble(weightInt.getText().toString().trim());
+                    i = Double.parseDouble(weight.getText().toString().trim());
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
                 i -= 2.5;
-                weightInt.setText(Double.toString(i));
+                weight.setText(Double.toString(i));
             }
         });
 
@@ -206,18 +373,18 @@ public class WorkoutInputFragment extends Fragment {
             public void onClick(View view) {
                 double i = 0;
                 try {
-                    i = Double.parseDouble(weightInt.getText().toString().trim());
+                    i = Double.parseDouble(weight.getText().toString().trim());
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
                 i += 2.5;
-                weightInt.setText(Double.toString(i));
+                editText.setText(Double.toString(i));
 
             }
         });
 
         linearLayout.addView(left);
-        linearLayout.addView(weightInt);
+        linearLayout.addView(editText);
         linearLayout.addView(right);
         return  linearLayout;
     }

@@ -16,12 +16,12 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 
 class ExerciseSection extends Section {
     private final String title;
-    private final List<String> list;
+    private final List<Workout> list;
     private final ClickListener clickListener;
 
     private boolean expanded = true;
 
-    ExerciseSection(@NonNull final String title, @NonNull final List<String> list,
+    ExerciseSection(@NonNull final String title, @NonNull final List<Workout> list,
                     @NonNull final ClickListener clickListener) {
         // call constructor with layout resources for this Section header and items
         super(SectionParameters.builder()
@@ -51,7 +51,7 @@ class ExerciseSection extends Section {
 
 
         // bind your view here
-        itemHolder.tvItem.setText(list.get(position));
+        itemHolder.tvItem.setText(list.get(position).getWorkoutName());
         itemHolder.rootView.setOnClickListener(v -> clickListener.onItemRootViewClicked(this, position, itemHolder.tvItem.getText().toString()));
 
     }

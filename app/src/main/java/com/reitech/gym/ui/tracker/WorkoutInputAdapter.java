@@ -37,9 +37,21 @@ public class WorkoutInputAdapter extends RecyclerView.Adapter<WorkoutViewHolder>
     @Override
     public void onBindViewHolder(@NonNull @NotNull WorkoutViewHolder holder, int position) {
         WorkoutLine list = lines.get(position);
+        switch (list.category){
+            case "WEIGHT_AND_TIME":
+                holder.first.setText(String.valueOf(list.weight));
+                holder.second.setText(String.valueOf(list.time));
+                break;
+            case "TIME_AND_DISTANCE":
+                holder.first.setText(String.valueOf(list.time));
+                holder.second.setText(String.valueOf(list.distance + list.distanceUnit));
+                break;
+            default:
+                holder.first.setText(String.valueOf(list.weight));
+                holder.second.setText(String.valueOf(list.reps));
+                break;
+        }
         holder.trophy.setText(String.valueOf(list.wid));
-        holder.first.setText(String.valueOf(list.weight));
-        holder.second.setText(String.valueOf(list.reps));
     }
 
     @Override

@@ -43,7 +43,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapt
 
 public class AddExerciseFragment extends Fragment implements ExerciseSection.ClickListener, SearchView.OnQueryTextListener, Filterable{
 
-    final Map<String, List<String>> exerciseMap = new LinkedHashMap<>();
+    final Map<String, List<Workout>> exerciseMap = new LinkedHashMap<>();
 
     private SectionedRecyclerViewAdapter sectionedAdapter;
     private RecyclerView recyclerView;
@@ -56,7 +56,7 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
         initExerciseList();
 
         sectionedAdapter = new SectionedRecyclerViewAdapter();
-        for (Map.Entry<String, List<String>> entry : exerciseMap.entrySet()){
+        for (Map.Entry<String, List<Workout>> entry : exerciseMap.entrySet()){
                 sectionedAdapter.addSection(new ExerciseSection(entry.getKey(), entry.getValue(), this));
         }
 
@@ -72,24 +72,24 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
     }
 
     private void initExerciseList() {
-        List<String> exerciseListAbs = new ArrayList<>();
-        List<String> exerciseListBack = new ArrayList<>();
-        List<String> exerciseListBiceps = new ArrayList<>();
-        List<String> exerciseListCardio = new ArrayList<>();
-        List<String> exerciseListChest = new ArrayList<>();
-        List<String> exerciseListLegs = new ArrayList<>();
-        List<String> exerciseListShoulders = new ArrayList<>();
-        List<String> exerciseListTriceps = new ArrayList<>();
+        List<Workout> exerciseListAbs = new ArrayList<>();
+        List<Workout> exerciseListBack = new ArrayList<>();
+        List<Workout> exerciseListBiceps = new ArrayList<>();
+        List<Workout> exerciseListCardio = new ArrayList<>();
+        List<Workout> exerciseListChest = new ArrayList<>();
+        List<Workout> exerciseListLegs = new ArrayList<>();
+        List<Workout> exerciseListShoulders = new ArrayList<>();
+        List<Workout> exerciseListTriceps = new ArrayList<>();
 
 
-        exerciseListAbs.addAll(Arrays.asList("Ab-Wheel", "Cable Crunch", "Crunch", "Crunch Machine", "Dragon Flag", "Hanging Knee Raise", "Hanging Leg Raise", "Plank", "Side Plank"));
-        exerciseListBack.addAll(Arrays.asList("Barbell Row", "Barbell Shrug", "Chin-Up", "Dead-lift", "Dip Assist", "Diverging Lat Pull-down", "Dumbbell Row", "Good Morning", "Hammer Strength Row", "Lat Pull-down", "Machine Shrug", "Neutral Chin Up", "Overhead Cable Pull", "Pendlay Row", "Pull-Up", "Pull-Up Assist", "Rack Pull", "Seated Cable Row", "Straight-Arm Cable Push-down", "T-Bar Row"));
-        exerciseListBiceps.addAll(Arrays.asList("Barbell Curl", "Cable Curl", "Dumbbell Concentration Curl", "Dumbbell Curl", "Dumbbell Hammer Curl", "Dumbbell Preach Curl", "EZ-Bar Curl", "EZ-Bar Preacher Curl", "Seated Dip", "Seated Incline Dumbbell Curl", "Seated Machine Curl"));
-        exerciseListCardio.addAll(Arrays.asList("Cycling", "Elliptical Trainer", "Rowing Machine", "Running (Outdoor)", "Running (Treadmill)", "Stair Climber", "Stationary Bike", "Swimming", "Walking"));
-        exerciseListChest.addAll(Arrays.asList("Cable Crossover", "Converging Chest Press", "Decline Barbell Bench Press", "Decline Hammer Strength Chest Press", "Flat Barbell Bench Press", "Flat Dumbbell Bench Press", "Flat Dumbbell Fly", "Incline Dumbbell Fly", "Incline Hammer Strength Chest Press", "Push-Up", "Seated Machine Cable Fly", "Seated Machine Fly"));
-        exerciseListLegs.addAll(Arrays.asList("Barbell Calf Raise", "Barbell Front Squat", "Barbell Glute Bridge", "Barbell Squat", "Donkey Calf Raise", "Glute-Ham Raise", "Hack Squat", "Leg Extension Machine", "Leg Press", "Lying Leg Curl Machine", "Romanian Dead-life", "Seated Calf Raise Machine", "Seated Leg Curl Machine", "Standing Calf Raise Machine", "Still-Legged Dead-lift", "Sumo Dead-lift"));
-        exerciseListShoulders.addAll(Arrays.asList("Arnold Dumbbell Press", "Behind The Neck Barbell Press", "Cable Face Pull", "Front Dumbbell Raise", "Hammer Strength Shoulder Press", "Lateral Dumbbell Raise", "Lateral Machine Raise", "Log Press", "One-Arm Standing Dumbbell Press", "Overhead Press", "Push Press", "Rear Delt Dumbbell Raise", "Rear Delt Machine Fly", "Seated Dumbbell Lateral Raise", "Seated Dumbbell Press", "Smith Machine Overhead Press"));
-        exerciseListTriceps.addAll(Arrays.asList("Cable Overhead Triceps Extension", "Close Grip Barbell Bench Press", "Dumbbell Overhead Triceps Extension", "EZ-Bar Skullcrusher", "Lying Triceps Extension", "Parallel Bar Triceps Dip", "Ring Dip", "Rope Push Down", "Smith Machine Close Grip Bench Press", "Triceps Extension Machine", "V-Bar Push Down"));
+        exerciseListAbs.addAll(Arrays.asList(new Workout("Ab-Wheel", "Abs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Cable Crunch", "Abs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Crunch", "Abs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Crunch Machine", "Abs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dragon Flag", "Abs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Hanging Knee Raise", "Abs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Hanging Leg Raise", "Abs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Plank", "Abs", Workout.WorkoutEnum.WEIGHT_AND_TIME), new Workout("Side Plank", "Abs", Workout.WorkoutEnum.WEIGHT_AND_TIME)));
+        exerciseListBack.addAll(Arrays.asList(new Workout("Barbell Row", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Barbell Shrug", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Chin-Up", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dead-lift", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dip Assist", "Back", Workout.WorkoutEnum.INVERTEDWEIGHT_AND_REPS), new Workout("Diverging Lat Pull-down", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dumbbell Row", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Good Morning", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Hammer Strength Row", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Lat Pull-down", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Machine Shrug", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Neutral Chin Up", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Overhead Cable Pull", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Pendlay Row", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Pull-Up", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Pull-Up Assist", "Back", Workout.WorkoutEnum.INVERTEDWEIGHT_AND_REPS), new Workout("Rack Pull", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Cable Row", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Straight-Arm Cable Push-down", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("T-Bar Row", "Back", Workout.WorkoutEnum.WEIGHT_AND_REPS)));
+        exerciseListBiceps.addAll(Arrays.asList(new Workout("Barbell Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Cable Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dumbbell Concentration Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dumbbell Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dumbbell Hammer Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dumbbell Preach Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("EZ-Bar Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("EZ-Bar Preacher Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Dip", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Incline Dumbbell Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Machine Curl", "Biceps", Workout.WorkoutEnum.WEIGHT_AND_REPS)));
+        exerciseListCardio.addAll(Arrays.asList(new Workout("Cycling", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE), new Workout("Elliptical Trainer", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE), new Workout("Rowing Machine", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE), new Workout("Running (Outdoor)", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE), new Workout("Running (Treadmill)", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE), new Workout("Stair Climber", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE), new Workout("Stationary Bike", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE), new Workout("Swimming", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE), new Workout("Walking", "Cardio", Workout.WorkoutEnum.TIME_AND_DISTANCE)));
+        exerciseListChest.addAll(Arrays.asList(new Workout("Cable Crossover", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Converging Chest Press", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Decline Barbell Bench Press", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Decline Hammer Strength Chest Press", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Flat Barbell Bench Press", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Flat Dumbbell Bench Press", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Flat Dumbbell Fly", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Incline Dumbbell Fly", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Incline Hammer Strength Chest Press", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Push-Up", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Machine Cable Fly", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Machine Fly", "Chest", Workout.WorkoutEnum.WEIGHT_AND_REPS)));
+        exerciseListLegs.addAll(Arrays.asList(new Workout("Barbell Calf Raise", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS) , new Workout("Barbell Front Squat", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Barbell Glute Bridge", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Barbell Squat", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Donkey Calf Raise", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Glute-Ham Raise", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Hack Squat", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Leg Extension Machine", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Leg Press", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Lying Leg Curl Machine", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Romanian Dead-life", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Calf Raise Machine", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Leg Curl Machine", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Standing Calf Raise Machine", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Still-Legged Dead-lift", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Sumo Dead-lift", "Legs", Workout.WorkoutEnum.WEIGHT_AND_REPS)));
+        exerciseListShoulders.addAll(Arrays.asList(new Workout("Arnold Dumbbell Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Behind The Neck Barbell Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Cable Face Pull", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Front Dumbbell Raise", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Hammer Strength Shoulder Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Lateral Dumbbell Raise", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Lateral Machine Raise", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Log Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("One-Arm Standing Dumbbell Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Overhead Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Push Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Rear Delt Dumbbell Raise", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Rear Delt Machine Fly", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Seated Dumbbell Lateral Raise", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS) , new Workout("Seated Dumbbell Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Smith Machine Overhead Press", "Shoulders", Workout.WorkoutEnum.WEIGHT_AND_REPS)));
+        exerciseListTriceps.addAll(Arrays.asList(new Workout("Cable Overhead Triceps Extension", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Close Grip Barbell Bench Press", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Dumbbell Overhead Triceps Extension", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("EZ-Bar Skullcrusher", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Lying Triceps Extension", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Parallel Bar Triceps Dip", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Ring Dip", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Rope Push Down", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Smith Machine Close Grip Bench Press", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("Triceps Extension Machine", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS), new Workout("V-Bar Push Down", "Triceps", Workout.WorkoutEnum.WEIGHT_AND_REPS)));
 
         exerciseMap.put("Abs", exerciseListAbs);
         exerciseMap.put("Back", exerciseListBack);
@@ -126,7 +126,8 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
     @Override
     public void onItemRootViewClicked(@NonNull final ExerciseSection section, final int itemAdapterPosition, final String exerciseName){
 
-        Fragment workout = new WorkoutInputFragment(exerciseName, Workout.WorkoutEnum.WEIGHT_AND_REPS);
+
+        Fragment workout = new WorkoutInputFragment(exerciseName, Workout.getCategoryFromExerciseName(exerciseName));
 
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
         TrackerFragment trackerFragment = (TrackerFragment) f;
@@ -160,12 +161,12 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
     @Override
     public boolean onQueryTextChange(String s) {
         boolean changed = false;
-        List<String> filteredList = new ArrayList<>();
+        List<Workout> filteredList = new ArrayList<>();
         sectionedAdapter.removeAllSections();
 
-        for (Map.Entry<String, List<String>> entry : exerciseMap.entrySet()){
-            for(String x : entry.getValue()){
-                if(x.toLowerCase().contains(s.toLowerCase())) {
+        for (Map.Entry<String, List<Workout>> entry : exerciseMap.entrySet()){
+            for(Workout x : entry.getValue()){
+                if(x.getWorkoutName().toLowerCase().contains(s.toLowerCase())) {
                     filteredList.add(x);
                     changed = true;
                 }
@@ -178,7 +179,7 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
 
         if(s.equals("")){
             sectionedAdapter.removeAllSections();
-            for (Map.Entry<String, List<String>> entry : exerciseMap.entrySet()){
+            for (Map.Entry<String, List<Workout>> entry : exerciseMap.entrySet()){
                 sectionedAdapter.addSection(new ExerciseSection(entry.getKey(), entry.getValue(), this));
             }
         }

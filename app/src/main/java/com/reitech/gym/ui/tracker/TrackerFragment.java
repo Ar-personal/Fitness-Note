@@ -162,7 +162,7 @@ public class TrackerFragment extends Fragment {
 
         //check of workout exists as part of the GUI already
         if(linearLayout == null){
-            addWorkout(wl.exerciseName);
+            addWorkout(wl.exerciseName, wl.category);
             linearLayout = getWorkoutLayout(wl.exerciseName);
         }
 
@@ -185,6 +185,10 @@ public class TrackerFragment extends Fragment {
             try {
                 workout.weight = wl.weight;
                 workout.reps = wl.reps;
+                workout.distanceUnit = wl.distanceUnit;
+                workout.distance = wl.distance;
+                workout.time = wl.time;
+                workout.category = wl.category;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
@@ -221,6 +225,7 @@ public class TrackerFragment extends Fragment {
                             workoutLine.date = dayWorkouts.get(i).date;
                             workoutLine.exerciseName = dayWorkouts.get(i).exerciseName;
                             workoutLine.category = dayWorkouts.get(i).category;
+                            workoutLine.time = dayWorkouts.get(i).time;
                             workoutLine.weight = dayWorkouts.get(i).weight;
                             workoutLine.reps = dayWorkouts.get(i).reps;
                             workoutLine.distance = dayWorkouts.get(i).distance;
@@ -237,7 +242,7 @@ public class TrackerFragment extends Fragment {
             });
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
+//    @RequiresApi(api = Build.VERSION_CODES.O)
 //    private void readCSVData() {
 //    File folder = new File(getView().getContext().getExternalFilesDir(null) + "/fitboost");
 //
@@ -280,7 +285,7 @@ public class TrackerFragment extends Fragment {
         return l;
     }
 
-    public void addWorkout(String workout){
+    public void addWorkout(String workout, String category){
         LinearLayout parent = createWorkoutLayout();
         parent.setBackgroundResource(R.drawable.borderless_radial_corner);
         LinearLayout.LayoutParams internalParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -319,21 +324,34 @@ public class TrackerFragment extends Fragment {
         trophy.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
         trophy.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TextView weightTitle = new TextView(getContext());
-        weightTitle.setText("WEIGHT");
-        weightTitle.setTypeface(trophy.getTypeface(), Typeface.BOLD);
-        weightTitle.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
-        weightTitle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        TextView firstColumn = new TextView(getContext());
+        firstColumn.setText("WEIGHT");
+        firstColumn.setTypeface(trophy.getTypeface(), Typeface.BOLD);
+        firstColumn.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+        firstColumn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
-        TextView repsTitle = new TextView(getContext());
-        repsTitle.setText("REPS");
-        repsTitle.setTypeface(trophy.getTypeface(), Typeface.BOLD);
-        repsTitle.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
-        repsTitle.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        TextView secondColumn = new TextView(getContext());
+        secondColumn.setTypeface(trophy.getTypeface(), Typeface.BOLD);
+        secondColumn.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
+        secondColumn.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
+        switch (category){
+            case "WEIGHT_AND_TIME":
+                firstColumn.setText("WEIGHT");
+                secondColumn.setText("TIME");
+                break;
+            case "TIME_AND_DISTANCE":
+                firstColumn.setText("TIME");
+                secondColumn.setText("DISTANCE");
+                break;
+            default:
+                firstColumn.setText("WEIGHT");
+                secondColumn.setText("REPS");
+                break;
+        }
         child2.addView(trophy);
-        child2.addView(weightTitle);
-        child2.addView(repsTitle);
+        child2.addView(firstColumn);
+        child2.addView(secondColumn);
 
         parent.addView(child1);
         parent.addView(divider);
@@ -344,8 +362,8 @@ public class TrackerFragment extends Fragment {
 
         excerciseName.setTypeface(excerciseName.getTypeface(), Typeface.BOLD);
         trophy.setTextColor(getResources().getColor(R.color.white));
-        weightTitle.setTextColor(getResources().getColor(R.color.white));
-        repsTitle.setTextColor(getResources().getColor(R.color.white));
+        firstColumn.setTextColor(getResources().getColor(R.color.white));
+        secondColumn.setTextColor(getResources().getColor(R.color.white));
     }
 
     public LinearLayout createWorkoutLayout(){
@@ -378,30 +396,75 @@ public class TrackerFragment extends Fragment {
         workoutLine.setBackgroundResource(R.drawable.borderless_radial_corner);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
         params.setMargins(30,5,30,15);
-
         TextView trophy = new TextView(getContext());
         trophy.setText("trophy");
         trophy.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         trophy.setLayoutParams(params);
         trophy.setTextColor(getResources().getColor(R.color.white));
 
-        TextView weight = new TextView(getContext());
-        weight.setId(R.id.weight);
-        weight.setText(wl.weight + " Kgs");
-        weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        weight.setLayoutParams(params);
-        weight.setTextColor(getResources().getColor(R.color.white));
+        switch (wl.category) {
+            case "WEIGHT_AND_TIME":
+                TextView weight = new TextView(getContext());
+                weight.setId(R.id.weight);
+                weight.setText(wl.weight + " Kgs");
+                weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                weight.setLayoutParams(params);
+                weight.setTextColor(getResources().getColor(R.color.white));
 
-        TextView reps = new TextView(getContext());
-        reps.setId(R.id.reps);
-        reps.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        reps.setText(String.valueOf(wl.reps));
-        reps.setLayoutParams(params);
-        reps.setTextColor(getResources().getColor(R.color.white));
 
-        workoutLine.addView(trophy);
-        workoutLine.addView(weight);
-        workoutLine.addView(reps);
+                TextView time = new TextView(getContext());
+                time.setId(R.id.time);
+                time.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                time.setText(String.valueOf(wl.reps));
+                time.setLayoutParams(params);
+                time.setTextColor(getResources().getColor(R.color.white));
+
+                workoutLine.addView(trophy);
+                workoutLine.addView(weight);
+                workoutLine.addView(time);
+                break;
+            case "TIME_AND_DISTANCE":
+
+
+                TextView t = new TextView(getContext());
+                t.setId(R.id.time);
+                t.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                t.setText(String.valueOf(wl.time));
+                t.setLayoutParams(params);
+                t.setTextColor(getResources().getColor(R.color.white));
+
+                TextView distance = new TextView(getContext());
+                distance.setId(R.id.distance);
+                distance.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                distance.setText(String.valueOf(wl.distance + wl.distanceUnit));
+                distance.setLayoutParams(params);
+                distance.setTextColor(getResources().getColor(R.color.white));
+
+                workoutLine.addView(trophy);
+                workoutLine.addView(t);
+                workoutLine.addView(distance);
+                break;
+            default:
+                TextView w = new TextView(getContext());
+                w.setId(R.id.weight);
+                w.setText(wl.weight + " Kgs");
+                w.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                w.setLayoutParams(params);
+                w.setTextColor(getResources().getColor(R.color.white));
+
+                TextView reps = new TextView(getContext());
+                reps.setId(R.id.reps);
+                reps.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                reps.setText(String.valueOf(wl.reps));
+                reps.setLayoutParams(params);
+                reps.setTextColor(getResources().getColor(R.color.white));
+
+                workoutLine.addView(trophy);
+                workoutLine.addView(w);
+                workoutLine.addView(reps);
+                break;
+        }
+
 
         LinearLayout divider = new LinearLayout(getContext());
         LinearLayout.LayoutParams divideParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2);
@@ -551,6 +614,11 @@ public class TrackerFragment extends Fragment {
                 parent.removeView(l);
             } catch (Exception e) {
                 e.printStackTrace();
+                try {
+                    parent.removeAllViews();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
             }
         }
         hideDelete();

@@ -51,7 +51,7 @@ public class Workout {
     public String distanceUnit;
 
     @ColumnInfo(name = "time")
-    public Double time;
+    public String time;
 
     @Dao
     public interface WorkoutDao{
