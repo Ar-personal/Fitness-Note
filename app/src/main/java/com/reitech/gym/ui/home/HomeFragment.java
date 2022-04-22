@@ -21,12 +21,16 @@ import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
 import com.reitech.gym.databinding.FragmentHomeBinding;
 import com.reitech.gym.ui.calendar.CalendarAdapter;
+import com.reitech.gym.ui.data.Workout;
+import com.reitech.gym.ui.data.WorkoutLine;
 import com.reitech.gym.ui.settings.SettingsFragment;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 public class HomeFragment extends Fragment implements CalendarAdapter.OnItemListener{
 
@@ -44,11 +48,8 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        monthYearText = binding.monthYear;
-        calendarRecyclerView = binding.calendarRecyclerView;
+
         initWidgets();
-
-
 
 
         return root;
@@ -57,6 +58,8 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void initWidgets() {
+        monthYearText = binding.monthYear;
+        calendarRecyclerView = binding.calendarRecyclerView;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             selectedDate = LocalDate.now();
         }else{

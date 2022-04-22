@@ -3,16 +3,11 @@ package com.reitech.gym;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,45 +19,31 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDestination;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import com.google.android.material.navigation.NavigationView;
-import com.opencsv.CSVWriter;
 import com.reitech.gym.databinding.ActivityMainBinding;
-import com.reitech.gym.ui.calendar.CalendarAdapter;
 import com.reitech.gym.ui.data.AppDatabase;
 import com.reitech.gym.ui.data.ExerciseListSetup;
-import com.reitech.gym.ui.data.LocalDateTimeConverter;
+import com.reitech.gym.ui.data.Program;
 import com.reitech.gym.ui.data.Workout;
 import com.reitech.gym.ui.home.HomeFragment;
-import com.reitech.gym.ui.programs.DashboardFragment;
+import com.reitech.gym.ui.programs.ProgramFragment;
 import com.reitech.gym.ui.settings.SettingsFragment;
 import com.reitech.gym.ui.tracker.TrackerFragment;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDate;
-import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemReselectedListener{
 
     private ActivityMainBinding binding;
     public Toolbar toolbar;
-    public Workout.WorkoutDao workoutDao;
+    public static Workout.WorkoutDao workoutDao;
+    public static Program.ProgramDao programDao;
+    public View fragment;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -90,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             return true;
         });
 
+        fragment = findViewById(R.id.nav_host_fragment_activity_main);
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.main_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -97,11 +79,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             public boolean onNavigationItemSelected(@NonNull @NotNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.navigation_home:
+                        getSupportFragmentManager().beginTransaction().detach(homeFragment).attach(homeFragment).replace(R.id.nav_host_fragment_activity_main, homeFragment).commit();
                         getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, homeFragment).commit();
                         break;
                     case R.id.navigation_programs:
                         getSupportFragmentManager().beginTransaction().remove(homeFragment).commit();
-                        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, new DashboardFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, new ProgramFragment(), "PROGRAMS").commit();
                         break;
                 }
                 return true;
@@ -112,9 +95,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     private void dataBaseSetup(){
         new Thread(() ->{
-            AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "fitboost_db").allowMainThreadQueries().build();
+            AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "fitboost_db").allowMainThreadQueries().fallbackToDestructiveMigration().build();
             workoutDao = db.userDao();
-            List<Workout> l = workoutDao.getAll();
+            programDao = db.programDao();
         }).start();
     }
 

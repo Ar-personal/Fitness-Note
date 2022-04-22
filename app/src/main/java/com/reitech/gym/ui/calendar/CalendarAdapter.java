@@ -1,6 +1,8 @@
 package com.reitech.gym.ui.calendar;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,9 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
+import com.reitech.gym.ui.data.Workout;
 import com.reitech.gym.ui.tracker.TrackerFragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>{
 
@@ -49,6 +54,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>{
         return new CalendarViewHolder(view, onItemListener);
     }
 
+    @SuppressLint("ResourceAsColor")
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull @NotNull CalendarViewHolder holder, int position) {
@@ -56,8 +62,21 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>{
         //check if date is empty otherwise localdate error
         if (daysOfMonth.get(position) != "") {
             l = localDate.withDayOfMonth(Integer.parseInt(daysOfMonth.get(position)));
+
+
+            if (checkDatabaseForWorkoutOnDate(l)){
+                holder.dayOfMonth.setBackgroundResource(R.drawable.calendar_workout);
+            }
+
+
+            if(l.isEqual(LocalDate.now())){
+                holder.dayOfMonth.setBackgroundResource(R.drawable.calendar_today);
+            }
         }
         holder.dayOfMonth.setText(daysOfMonth.get(position));
+
+
+
         LocalDate finalL = l;
         holder.dayOfMonth.setOnClickListener(new View.OnClickListener() {
 
@@ -85,5 +104,16 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>{
     private void monthYearFromDate(LocalDate date){
         month = date.getMonthValue();
         year = date.getYear();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private boolean checkDatabaseForWorkoutOnDate(LocalDate date){
+        Workout.WorkoutDao workoutDao = MainActivity.workoutDao;
+        List<Workout> dayWorkouts = workoutDao.getWorkoutsFromDate(date.toString());
+        if (dayWorkouts.isEmpty() || dayWorkouts == null) {
+            return false;
+        }
+
+        return true;
     }
 }

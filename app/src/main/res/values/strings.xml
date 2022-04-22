@@ -3,7 +3,7 @@
     <string name="title_home">Home</string>
     <string name="title_programs">Programs</string>
     <string name="title_notifications">Notifications</string>
-
+    <string name ="gzclp_desc">Cody LeFever’s Linear Progression program for beginners</string>
 
     <string-array name="distance_units">
         <item>m</item>

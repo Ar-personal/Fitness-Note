@@ -23,7 +23,6 @@ public class WorkoutInputAdapter extends RecyclerView.Adapter<WorkoutViewHolder>
     public WorkoutInputAdapter(List<WorkoutLine> lines) {
         this.lines = lines;
     }
-
     @NonNull
     @NotNull
     @Override

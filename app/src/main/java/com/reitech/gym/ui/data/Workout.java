@@ -53,8 +53,11 @@ public class Workout {
     @ColumnInfo(name = "time")
     public String time;
 
+    @ColumnInfo(name = "program_tag")
+    public String programTag;
+
     @Dao
-    public interface WorkoutDao{
+    public interface WorkoutDao {
         @Insert(onConflict = OnConflictStrategy.REPLACE)
         public void insertWorkout(Workout... workouts);
 
@@ -74,7 +77,5 @@ public class Workout {
         void deleteById(int wid);
 
     }
-
-
 }
 

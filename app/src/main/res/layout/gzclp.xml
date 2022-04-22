@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="1dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gzclp_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/dark">
+
+            <LinearLayout
+                android:id="@+id/gzclp_t1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/home_border"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/gzclp_holder"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/gzclp_t2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/home_border"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/gzclp_t1"
+                tools:layout_editor_absoluteX="1dp"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/gzclp_t3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/home_border"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/gzclp_t2"
+                tools:layout_editor_absoluteX="23dp"></LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/gzclp_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/gzclp_t3"
+                tools:layout_editor_absoluteX="1dp">
+
+                <Button
+                    android:id="@+id/gzclp_add_optional"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Add optional exercise" />
+
+            </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <ImageView
+        android:id="@+id/save_gzclp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:background="@drawable/circle_bg"
+        android:elevation="6dp"
+        android:scaleType="centerInside"
+        android:scaleX="0.5"
+        android:scaleY="0.5"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_baseline_save"
+        android:outlineAmbientShadowColor="@color/black"
+        android:outlineSpotShadowColor="@color/black"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

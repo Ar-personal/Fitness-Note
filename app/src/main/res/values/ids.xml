@@ -7,4 +7,10 @@
     <item name="time" type="id"/>
     <item name="distance" type="id"/>
     <item name="unit" type="id"/>
+    <item name="cont" type="id"/>
+    <item name="programSet" type="id"/>
+    <item name="t1Layout" type="id"/>
+    <item name="t2Layout" type="id"/>
+    <item name="t3Layout" type="id"/>
+    <item name="programName" type="id"/>
 </resources>

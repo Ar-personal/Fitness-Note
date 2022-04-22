@@ -26,7 +26,7 @@ public class WorkoutLine implements Serializable {
 
     public String time;
 
-
+    public String programTag;
 
 
 }

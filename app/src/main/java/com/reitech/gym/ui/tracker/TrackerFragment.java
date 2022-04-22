@@ -1,12 +1,15 @@
 package com.reitech.gym.ui.tracker;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Menu;
@@ -24,15 +27,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.ItemTouchUIUtil;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
-import com.opencsv.exceptions.CsvException;
 import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
 import com.reitech.gym.ui.data.Workout;
@@ -42,10 +41,7 @@ import com.reitech.gym.ui.exerciselist.AddExerciseFragment;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -79,7 +75,6 @@ public class TrackerFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
         TextView trackerDate = view.findViewById(R.id.tackerDate);
         String day = getReadableDate(date.getDayOfMonth());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy");
@@ -91,19 +86,19 @@ public class TrackerFragment extends Fragment {
         readFromDatabase();
 
         //mainly check for left and right swipes for day changes
-        root.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return gestureDetector.onTouchEvent(motionEvent);
-            }
-        });
-
-        scrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return gestureDetector.onTouchEvent(motionEvent);
-            }
-        });
+//        root.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return gestureDetector.onTouchEvent(motionEvent);
+//            }
+//        });
+//
+//        scrollView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return gestureDetector.onTouchEvent(motionEvent);
+//            }
+//        });
 
         trackerDate.setText(day + " " + date.format(formatter));
 
@@ -127,7 +122,7 @@ public class TrackerFragment extends Fragment {
         });
         
 
-        FloatingActionButton fab = view.findViewById(R.id.fab_add_exercise);
+        FloatingActionButton fab = view.findViewById(R.id.fab_add_program);
         fab.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
@@ -189,6 +184,7 @@ public class TrackerFragment extends Fragment {
                 workout.distance = wl.distance;
                 workout.time = wl.time;
                 workout.category = wl.category;
+                workout.programTag = wl.programTag;
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }
@@ -211,35 +207,38 @@ public class TrackerFragment extends Fragment {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private void readFromDatabase(){
-            Workout.WorkoutDao workoutDao = ((MainActivity)getActivity()).workoutDao;
-            List<Workout> dayWorkouts = workoutDao.getWorkoutsFromDate(date.toString());
+    private void readFromDatabase() {
+        Workout.WorkoutDao workoutDao = ((MainActivity) getActivity()).workoutDao;
+        List<Workout> dayWorkouts = workoutDao.getWorkoutsFromDate(date.toString());
+        List<WorkoutLine> workoutLines = new ArrayList<>();
 
-            Executors.newSingleThreadExecutor().execute(new Runnable() {
-                @Override
-                public void run() {
-                    for(int i = 0; i < dayWorkouts.size(); i++) {
-                        WorkoutLine workoutLine = new WorkoutLine();
-                        try {
-                            workoutLine.wid = dayWorkouts.get(i).wid;
-                            workoutLine.date = dayWorkouts.get(i).date;
-                            workoutLine.exerciseName = dayWorkouts.get(i).exerciseName;
-                            workoutLine.category = dayWorkouts.get(i).category;
-                            workoutLine.time = dayWorkouts.get(i).time;
-                            workoutLine.weight = dayWorkouts.get(i).weight;
-                            workoutLine.reps = dayWorkouts.get(i).reps;
-                            workoutLine.distance = dayWorkouts.get(i).distance;
-                            workoutLine.distanceUnit = dayWorkouts.get(i).distanceUnit;
-                            setWorkout(workoutLine, true);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        //check if a valid exercise is being loaded e.g. empty or not
-
-
+        Handler handler = new Handler(Looper.getMainLooper()) {
+            @Override
+            public void handleMessage(Message msg) {
+                for (int i = 0; i < dayWorkouts.size(); i++) {
+                    WorkoutLine workoutLine = new WorkoutLine();
+                    try {
+                        workoutLine.wid = dayWorkouts.get(i).wid;
+                        workoutLine.date = dayWorkouts.get(i).date;
+                        workoutLine.exerciseName = dayWorkouts.get(i).exerciseName;
+                        workoutLine.category = dayWorkouts.get(i).category;
+                        workoutLine.time = dayWorkouts.get(i).time;
+                        workoutLine.weight = dayWorkouts.get(i).weight;
+                        workoutLine.reps = dayWorkouts.get(i).reps;
+                        workoutLine.distance = dayWorkouts.get(i).distance;
+                        workoutLine.distanceUnit = dayWorkouts.get(i).distanceUnit;
+                        workoutLine.programTag = dayWorkouts.get(i).programTag;
+                        workoutLines.add(workoutLine);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
-            });
+                for (int j = 0; j < workoutLines.size(); j++){
+                    setWorkout(workoutLines.get(j), true);
+                }
+            }
+        };
+        handler.sendEmptyMessage(1);
     }
 
 //    @RequiresApi(api = Build.VERSION_CODES.O)
