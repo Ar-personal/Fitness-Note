@@ -2,6 +2,7 @@ package com.reitech.gym.ui.programs;
 
 public class Program {
 
+    private int programID;
     private String name;
     private int unitDefault = 0;
     private int weightIncrementDefault = 0;
@@ -15,10 +16,18 @@ public class Program {
     private int squatFail = 0;
     private int deadFail = 0;
     private int ohpFail = 0;
-    private double bench3RepMax;
-    private double squat3RepMax;
-    private double dead3RepMax;
-    private double ohp3RepMax;
+    private int benchFailT2 = 0;
+    private int squatFailT2 = 0;
+    private int deadFailT2 = 0;
+    private int ohpFailT2 = 0;
+    private double benchT1ThreeRep;
+    private double benchT2TenRep;
+    private double squatT1ThreeRep;
+    private double squatT2TenRep;
+    private double deadT1ThreeRep;
+    private double deadT2TenRep;
+    private double ohpT1ThreeRep;
+    private double ohpT2TenRep;
 
     public Program(String name, int unitDefault, int weightIncrementDefault){
         this.name = name;
@@ -27,40 +36,182 @@ public class Program {
 
     }
 
+
+
+    public int getExerciseFail(String exercise, int tier){
+        int result = 0;
+        if(tier == 1) {
+            switch (exercise) {
+                case "Barbell Squat":
+                    result = squatFail;
+                    break;
+                case "Dead-lift":
+                    result =  deadFail;
+                    break;
+                case "Flat Barbell Bench Press":
+                    result =  benchFail;
+                    break;
+                case "Overhead Press":
+                    result =  ohpFail;
+                    break;
+            }
+        }else if (tier == 2) {
+            switch (exercise) {
+                case "Barbell Squat":
+                    result =  squatFailT2;
+                    break;
+                case "Dead-lift":
+                    result =  deadFailT2;
+                    break;
+                case "Flat Barbell Bench Press":
+                    result =  benchFailT2;
+                    break;
+                case "Overhead Press":
+                    result =  ohpFailT2;
+                    break;
+            }
+        }
+        return result;
+
+    }
+
+    public int calculateT1RepsFromFails(int fails, String programName){
+        switch (programName){
+            case "GZCLP":
+                switch (fails){
+                    case 1:
+                        return 2;
+                    case 2:
+                        return 1;
+                    default:
+                        return 3;
+                }
+        }
+        return -1;
+    }
+
+    public int calculateT2RepsFromFails(int fails, String programName){
+        switch (programName){
+            case "GZCLP":
+                switch (fails){
+                    case 1:
+                        return 8;
+                    case 2:
+                        return 6;
+                    default:
+                        return 10;
+                }
+        }
+        return -1;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
 
-    public double getBench3RepMax() {
-        return bench3RepMax;
+    public void setProgramID(int programID) {
+        this.programID = programID;
     }
 
-    public void setBench3RepMax(double bench3RepMax) {
-        this.bench3RepMax = bench3RepMax;
+    public int getProgramID() {
+        return programID;
     }
 
-    public double getSquat3RepMax() {
-        return squat3RepMax;
+    public int getBenchFailT2() {
+        return benchFailT2;
     }
 
-    public void setSquat3RepMax(double squat3RepMax) {
-        this.squat3RepMax = squat3RepMax;
+    public void setBenchFailT2(int benchFailT2) {
+        this.benchFailT2 = benchFailT2;
     }
 
-    public double getDead3RepMax() {
-        return dead3RepMax;
+    public int getSquatFailT2() {
+        return squatFailT2;
     }
 
-    public void setDead3RepMax(double dead3RepMax) {
-        this.dead3RepMax = dead3RepMax;
+    public void setSquatFailT2(int squatFailT2) {
+        this.squatFailT2 = squatFailT2;
     }
 
-    public double getOhp3RepMax() {
-        return ohp3RepMax;
+    public int getDeadFailT2() {
+        return deadFailT2;
     }
 
-    public void setOhp3RepMax(double ohp3RepMax) {
-        this.ohp3RepMax = ohp3RepMax;
+    public void setDeadFailT2(int deadFailT2) {
+        this.deadFailT2 = deadFailT2;
+    }
+
+    public int getOhpFailT2() {
+        return ohpFailT2;
+    }
+
+    public void setOhpFailT2(int ohpFailT2) {
+        this.ohpFailT2 = ohpFailT2;
+    }
+
+
+    public double getBenchT1ThreeRep() {
+        return benchT1ThreeRep;
+    }
+
+    public void setBenchT1ThreeRep(double benchT1ThreeRep) {
+        this.benchT1ThreeRep = benchT1ThreeRep;
+    }
+
+    public double getBenchT2TenRep() {
+        return benchT2TenRep;
+    }
+
+    public void setBenchT2TenRep(double benchT2TenRep) {
+        this.benchT2TenRep = benchT2TenRep;
+    }
+
+    public double getSquatT1ThreeRep() {
+        return squatT1ThreeRep;
+    }
+
+    public void setSquatT1ThreeRep(double squatT1ThreeRep) {
+        this.squatT1ThreeRep = squatT1ThreeRep;
+    }
+
+    public double getSquatT2TenRep() {
+        return squatT2TenRep;
+    }
+
+    public void setSquatT2TenRep(double squatT2TenRep) {
+        this.squatT2TenRep = squatT2TenRep;
+    }
+
+    public double getDeadT1ThreeRep() {
+        return deadT1ThreeRep;
+    }
+
+    public void setDeadT1ThreeRep(double deadT1ThreeRep) {
+        this.deadT1ThreeRep = deadT1ThreeRep;
+    }
+
+    public double getDeadT2TenRep() {
+        return deadT2TenRep;
+    }
+
+    public void setDeadT2TenRep(double deadT2TenRep) {
+        this.deadT2TenRep = deadT2TenRep;
+    }
+
+    public double getOhpT1ThreeRep() {
+        return ohpT1ThreeRep;
+    }
+
+    public void setOhpT1ThreeRep(double ohpT1ThreeRep) {
+        this.ohpT1ThreeRep = ohpT1ThreeRep;
+    }
+
+    public double getOhpT2TenRep() {
+        return ohpT2TenRep;
+    }
+
+    public void setOhpT2TenRep(double ohpT2TenRep) {
+        this.ohpT2TenRep = ohpT2TenRep;
     }
 
     public int getImageResouceID() {

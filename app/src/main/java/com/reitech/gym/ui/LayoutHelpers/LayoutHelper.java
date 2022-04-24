@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -88,7 +90,7 @@ public class LayoutHelper extends AppCompatActivity {
         flexboxLayout.setFlexWrap(FlexWrap.WRAP);
         FlexboxLayout.LayoutParams internalParams = new FlexboxLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         internalParams.setMaxWidth(200);
-        internalParams.setMargins(20, 20, 20, 20);
+        internalParams.setMargins(50, 20, 50, 20);
         FlexboxLayout.LayoutParams buttonParams = new FlexboxLayout.LayoutParams(buttonWidth, buttonWidth);
         buttonParams.setMargins(buttonMargin, buttonMargin ,0 ,0);
         flexboxLayout.setLayoutParams(internalParams);
@@ -123,7 +125,7 @@ public class LayoutHelper extends AppCompatActivity {
         cont.setId(R.id.cont);
         cont.setTextSize(16);
         cont.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        cont.setBackgroundColor(context.getResources().getColor(R.color.background));
+        cont.setBackgroundColor(context.getResources().getColor(R.color.positive));
         cont.setText("Continue");
         cont.setTextColor(context.getResources().getColor(R.color.white));
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -146,14 +148,17 @@ public class LayoutHelper extends AppCompatActivity {
 
         ImageView icon = new ImageView(context);
         icon.setBackgroundResource(imageView);
-        icon.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 5));
+        LinearLayout.LayoutParams iconpms = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, 4);
+        iconpms.setMargins(40, 0, 0, 0);
+        icon.setLayoutParams(iconpms);
+
 
         TextView desc = new TextView(context);
         desc.setText(text);
         desc.setTextSize(18);
         desc.setTextColor(context.getResources().getColor(R.color.white));
         desc.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-        desc.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        desc.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 2));
 
         linearLayout.addView(icon);
         linearLayout.addView(desc);
@@ -166,7 +171,7 @@ public class LayoutHelper extends AppCompatActivity {
         LinearLayout.LayoutParams internalParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         linearLayout.setOrientation(LinearLayout.HORIZONTAL);
         linearLayout.setWeightSum(2);
-        internalParams.setMargins(10, 10, 10 ,10);
+        internalParams.setMargins(40, 10, 40 ,10);
         linearLayout.setLayoutParams(internalParams);
 
         TextView completed = new TextView(context);
@@ -189,32 +194,77 @@ public class LayoutHelper extends AppCompatActivity {
         return linearLayout;
     }
 
+    public static LinearLayout addTitleRow(Context context){
+        LinearLayout titles = new LinearLayout(context);
+        titles.setOrientation(LinearLayout.HORIZONTAL);
+        titles.setWeightSum(5);
+        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        titles.setLayoutParams(titleParams);
+
+
+        TextView set = new TextView(context);
+        set.setText("Set");
+        set.setTextColor(context.getResources().getColor(R.color.positive));
+        set.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        set.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView target = new TextView(context);
+        target.setText("Target");
+        target.setTextColor(context.getResources().getColor(R.color.positive));
+        target.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        target.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView result = new TextView(context);
+        result.setText("Result");
+        result.setTextColor(context.getResources().getColor(R.color.positive));
+        result.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        result.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView l = new TextView(context);
+        l.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        l.setText("");
+
+        TextView completed = new TextView(context);
+        completed.setTextColor(context.getResources().getColor(R.color.positive));
+        completed.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        completed.setText("Completed");
+
+        titles.addView(set);
+        titles.addView(target);
+        titles.addView(result);
+        titles.addView(l);
+        titles.addView(completed);
+
+        return titles;
+    }
+
     @SuppressLint("ResourceAsColor")
     public static LinearLayout addT1Workout(Context context, String label, Program program, LinearLayout root){
         LinearLayout type = new LinearLayout(context);
         LinearLayout.LayoutParams internalParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         type.setOrientation(LinearLayout.HORIZONTAL);
-        type.setWeightSum(4);
         internalParams.setMargins(10, 10, 10 ,10);
         type.setLayoutParams(internalParams);
 
         TextView name = new TextView(context);
         name.setText(label);
         name.setId(R.id.programName);
-        name.setTextColor(R.color.primary);
+        name.setTextColor(context.getResources().getColor(R.color.positive));
         name.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         name.setTypeface(name.getTypeface(), Typeface.BOLD);
         name.setTextSize(16);
 
         TextView tier = new TextView(context);
+        tier.setId(R.id.tier);
         tier.setText("T1");
+        tier.setTextColor(context.getResources().getColor(R.color.positive));
         tier.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         tier.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tier.setTypeface(name.getTypeface(), Typeface.BOLD);
         tier.setTextSize(16);
 
-        LinearLayout titles = addTitleRow(context, label, program);
+        LinearLayout titles = addTitleRow(context);
 
         LinearLayout addWarmup = addWarmup(context);
         LinearLayout warmUpButton = addWarmupButton(context, root);
@@ -227,183 +277,192 @@ public class LayoutHelper extends AppCompatActivity {
         root.addView(warmUpButton);
 
         double range;
+        double upperIncrease = 2.5;
+        double lowerIncrease = 5;
+
+        if(upperIncrease > program.getMaxIncreaseDefault()){
+            upperIncrease = program.getMaxIncreaseDefault();
+        }
+        if(lowerIncrease > program.getMaxIncreaseDefault()){
+            lowerIncrease = program.getMaxIncreaseDefault();
+        }
         switch (label){
             case "Flat Barbell Bench Press":
                 double base = program.getBenchMax();
-                if(program.getBench3RepMax() == 0){
+                int failsBench = program.getExerciseFail(label, 1);
+                if(program.getBenchT1ThreeRep() == 0){
                     //calculate max
                     range = (base / 100) * 90;
                 }else{
-                    range = (program.getBench3RepMax() / 100) * 90;
+                    range = (program.getBenchT1ThreeRep() / 100) * 92;
                 }
-                for (int amt = 0; amt < 5 + program.getBenchFail(); amt++){
-                    root.addView(addProgramSet(context, range, 3 - program.getBenchFail(), amt));
+                range = roundToWeight(range, upperIncrease);
+                for (int amt = 1; amt < 6 + program.getBenchFail(); amt++){
+                    root.addView(addProgramSet(context, range, program.calculateT1RepsFromFails(failsBench, program.getName()), amt));
                 }
                 break;
             case "Barbell Squat":
                 double squatBase = program.getSquatMax();
-                if(program.getBench3RepMax() == 0){
+                int failsSquat = program.getExerciseFail(label, 1);
+                if(program.getSquatT1ThreeRep() == 0){
                     //calculate max
                     range = (squatBase / 100) * 90;
                 }else{
-                    range = (program.getSquat3RepMax() / 100) * 90;
+                    range = (program.getSquatT1ThreeRep() / 100) * 92;
                 }
-                for (int amt = 0; amt < 5 + program.getBenchFail(); amt++){
-                    root.addView(addProgramSet(context, range, 3 - program.getSquatFail(), amt));
+                range = roundToWeight(range, lowerIncrease);
+                for (int amt = 1; amt < 6 + program.getBenchFail(); amt++){
+                    root.addView(addProgramSet(context, range, program.calculateT1RepsFromFails(failsSquat, program.getName()),amt));
                 }
                 break;
             case "Overhead Press":
                 double ohpBase = program.getOhpMax();
-                if(program.getOhp3RepMax() == 0){
+                int failsOhp = program.getExerciseFail(label, 1);
+                if(program.getOhpT1ThreeRep() == 0){
                     //calculate max
                     range = (ohpBase / 100) * 90;
+
                 }else{
-                    range = (program.getSquat3RepMax() / 100) * 90;
+                    range = (program.getOhpT1ThreeRep() / 100) * 92;
                 }
-                for (int amt = 0; amt < 5 + program.getOhpFail(); amt++){
-                    root.addView(addProgramSet(context, range, 3 - program.getOhpFail(), amt));
+                range = roundToWeight(range, upperIncrease);
+                for (int amt = 1; amt < 6 + program.getOhpFail(); amt++){
+                    root.addView(addProgramSet(context, range, program.calculateT1RepsFromFails(failsOhp, program.getName()), amt));
                 }
                 break;
             case "Dead-lift":
                 double deadBase = program.getDeadliftMax();
-                if(program.getDead3RepMax() == 0){
+                int failsDead = program.getExerciseFail(label, 1);
+                if(program.getDeadT1ThreeRep() == 0){
                     //calculate max
                     range = (deadBase / 100) * 90;
                 }else{
-                    range = (program.getDead3RepMax() / 100) * 90;
+                    range = (program.getDeadT1ThreeRep() / 100) * 92;
                 }
-                for (int amt = 0; amt < 5 + program.getDeadFail(); amt++){
-                    root.addView(addProgramSet(context, range, 3 - program.getDeadFail(), amt));
+                range = roundToWeight(range, lowerIncrease);
+                for (int amt = 1; amt < 6 + program.getDeadFail(); amt++){
+                    root.addView(addProgramSet(context, range, program.calculateT1RepsFromFails(failsDead, program.getName()), amt));
                 }
                 break;
         }
         return root;
     }
 
-    public static LinearLayout addTitleRow(Context context, String label, Program program){
-        LinearLayout titles = new LinearLayout(context);
-        titles.setOrientation(LinearLayout.HORIZONTAL);
-        titles.setWeightSum(4);
-        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        titles.setLayoutParams(titleParams);
+    public static double roundToWeight(double weight, double roundAmt){
 
+        weight = roundAmt*(Math.ceil(Math.abs(weight/roundAmt)));
 
-        TextView set = new TextView(context);
-        set.setText("Set");
-        set.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-        set.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        TextView target = new TextView(context);
-        target.setText("Target");
-        target.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-        target.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        TextView result = new TextView(context);
-        result.setText("Result");
-        result.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-        result.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        TextView l = new TextView(context);
-        l.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-        l.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
-
-        titles.addView(set);
-        titles.addView(target);
-        titles.addView(result);
-        titles.addView(l);
-
-        return titles;
+        return weight;
     }
+
+
 
     @SuppressLint("ResourceAsColor")
     public static LinearLayout addT2Workout(Context context, String label, Program program, LinearLayout root){
         LinearLayout type = new LinearLayout(context);
         LinearLayout.LayoutParams internalParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         type.setOrientation(LinearLayout.HORIZONTAL);
-        type.setWeightSum(4);
         internalParams.setMargins(10, 10, 10 ,10);
         type.setLayoutParams(internalParams);
 
         TextView name = new TextView(context);
         name.setText(label);
         name.setId(R.id.programName);
-        name.setTextColor(R.color.primary);
+        name.setTextColor(context.getResources().getColor(R.color.positive));
         name.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         name.setTypeface(name.getTypeface(), Typeface.BOLD);
         name.setTextSize(16);
 
         TextView tier = new TextView(context);
+        tier.setId(R.id.tier);
         tier.setText("T2");
+        tier.setTextColor(context.getResources().getColor(R.color.positive));
         tier.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         tier.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tier.setTypeface(name.getTypeface(), Typeface.BOLD);
         tier.setTextSize(16);
 
-        LinearLayout titles = addTitleRow(context, label, program);
+        LinearLayout titles = addTitleRow(context);
 
         LinearLayout addWarmup = addWarmup(context);
         LinearLayout warmUpButton = addWarmupButton(context, root);
 
         root.addView(name);
+        root.addView(tier);
         root.addView(type);
         root.addView(titles);
         root.addView(addWarmup);
         root.addView(warmUpButton);
 
+        double upperIncrease = 2.5;
+        double lowerIncrease = 5;
 
+        if(upperIncrease > program.getMaxIncreaseDefault()){
+            upperIncrease = program.getMaxIncreaseDefault();
+        }
+        if(lowerIncrease > program.getMaxIncreaseDefault()){
+            lowerIncrease = program.getMaxIncreaseDefault();
+        }
         double range;
         switch (label){
             case "Flat Barbell Bench Press":
                 double base = program.getBenchMax();
-                if(program.getBench3RepMax() == 0){
+                int failsBench = program.getExerciseFail(label, 2);
+                if(program.getBenchT2TenRep() == 0){
                     //calculate max
                     range = (base / 100) * 70;
                 }else{
-                    range = (program.getBench3RepMax() / 100) * 70;
+                    range = (program.getBenchT2TenRep() / 100) * 72;
                 }
-                for (int amt = 0; amt < 5 + program.getBenchFail(); amt++){
-                    root.addView(addProgramSet(context, range, 3 - program.getBenchFail(), amt));
+                range = roundToWeight(range, upperIncrease);
+                for (int amt = 1; amt < 4; amt++){
+                    root.addView(addProgramSet(context, range, program.calculateT2RepsFromFails(failsBench, program.getName()),amt));
                 }
                 break;
             case "Barbell Squat":
                 double squatBase = program.getSquatMax();
-                if(program.getBench3RepMax() == 0){
+                int failsSquat = program.getExerciseFail(label, 2);
+                if(program.getSquatT2TenRep() == 0){
                     //calculate max
                     range = (squatBase / 100) * 70;
                 }else{
-                    range = (program.getSquat3RepMax() / 100) * 70;
+                    range = (program.getSquatT2TenRep() / 100) * 72;
                 }
-                for (int amt = 0; amt < 5 + program.getBenchFail(); amt++){
-                    root.addView(addProgramSet(context, range, 3 - program.getSquatFail(), amt));
+                range = roundToWeight(range, lowerIncrease);
+                for (int amt = 1; amt < 4; amt++){
+                    root.addView(addProgramSet(context, range, program.calculateT2RepsFromFails(failsSquat, program.getName()), amt));
                 }
                 break;
             case "Overhead Press":
                 double ohpBase = program.getOhpMax();
-                if(program.getOhp3RepMax() == 0){
+                int failsOhp = program.getExerciseFail(label, 2);
+                if(program.getOhpT2TenRep() == 0){
                     //calculate max
                     range = (ohpBase / 100) * 70;
                 }else{
-                    range = (program.getSquat3RepMax() / 100) * 70;
+                    range = (program.getOhpT2TenRep() / 100) * 72;
                 }
-                for (int amt = 0; amt < 5 + program.getOhpFail(); amt++){
-                    root.addView(addProgramSet(context, range, 3 - program.getOhpFail(), amt));
+                range = roundToWeight(range, upperIncrease);
+                for (int amt = 1; amt < 4; amt++){
+                    root.addView(addProgramSet(context, range, program.calculateT2RepsFromFails(failsOhp, program.getName()), amt));
                 }
                 break;
             case "Dead-lift":
                 double deadBase = program.getDeadliftMax();
-                if(program.getDead3RepMax() == 0){
+                int failsDead = program.getExerciseFail(label, 2);
+                if(program.getDeadT2TenRep() == 0){
                     //calculate max
                     range = (deadBase / 100) * 70;
                 }else{
-                    range = (program.getDead3RepMax() / 100) * 70;
+                    range = (program.getDeadT2TenRep() / 100) * 72;
                 }
-                for (int amt = 0; amt < 5 + program.getDeadFail(); amt++){
-                    root.addView(addProgramSet(context, range, 3 - program.getDeadFail(), amt));
+                range = roundToWeight(range, lowerIncrease);
+                for (int amt = 1; amt < 4; amt++){
+                    root.addView(addProgramSet(context, range, program.calculateT2RepsFromFails(failsDead, program.getName()), amt));
                 }
                 break;
         }
-
         return root;
     }
 
@@ -419,38 +478,40 @@ public class LayoutHelper extends AppCompatActivity {
         TextView name = new TextView(context);
         name.setText(label);
         name.setId(R.id.programName);
-        name.setTextColor(R.color.primary);
+        name.setTextColor(context.getResources().getColor(R.color.positive));
         name.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         name.setTypeface(name.getTypeface(), Typeface.BOLD);
         name.setTextSize(16);
 
         TextView tier = new TextView(context);
+        tier.setId(R.id.tier);
         tier.setText("T3");
+        tier.setTextColor(context.getResources().getColor(R.color.positive));
         tier.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         tier.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tier.setTypeface(name.getTypeface(), Typeface.BOLD);
         tier.setTextSize(16);
 
-        LinearLayout titles = addTitleRow(context, label, program);
+        LinearLayout titles = addTitleRow(context);
 
         root.addView(name);
+        root.addView(tier);
         root.addView(type);
         root.addView(titles);
-
 
         root.addView(addProgramSet(context, 0, 15, 1));
         root.addView(addProgramSet(context, 0, 15, 2));
         root.addView(addProgramSet(context, 0, 25, 3));
-
 
         return root;
     }
 
     public static LinearLayout addWarmup(Context context){
         LinearLayout warmupLayout = new LinearLayout(context);
+        warmupLayout.setId(R.id.warmUpSet);
         warmupLayout.setOrientation(LinearLayout.HORIZONTAL);
-        warmupLayout.setWeightSum(4);
+        warmupLayout.setWeightSum(5);
         warmupLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         TextView warm = new TextView(context);
@@ -460,21 +521,27 @@ public class LayoutHelper extends AppCompatActivity {
 
         TextView t1 = new TextView(context);
         t1.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        t1.setText("");
 
-        EditText r = new EditText(context);
-        r.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        TextView t2 = new TextView(context);
+        t2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        t2.setText("");
 
-        ImageButton tick = new ImageButton(context);
-        tick.setBackgroundResource(R.drawable.ic_baseline_tick);
-        LinearLayout.LayoutParams tickParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-        tickParams.setMargins(90, 40, 90 ,10);
-        tick.setLayoutParams(tickParams);
+        EditText resW = new EditText(context);
+        resW.setHint("Kg");
+        resW.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        resW.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
+        EditText resR = new EditText(context);
+        resR.setHint("reps");
+        resR.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        resR.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         warmupLayout.addView(warm);
         warmupLayout.addView(t1);
-        warmupLayout.addView(r);
-        warmupLayout.addView(tick);
+        warmupLayout.addView(resW);
+        warmupLayout.addView(resR);
+        warmupLayout.addView(t2);
 
         return warmupLayout;
     }
@@ -485,17 +552,25 @@ public class LayoutHelper extends AppCompatActivity {
         addWarmup.setOrientation(LinearLayout.HORIZONTAL);
         addWarmup.setWeightSum(1);
 
-        Button addWarm = new Button(context);
+        TextView addWarm = new TextView(context);
         addWarm.setText("Add Warmup Set");
-        addWarm.setHintTextColor(R.color.primary);
-        addWarm.setBackgroundColor(R.color.background);
-        addWarm.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        addWarm.setTextColor(context.getResources().getColor(R.color.white));
+        addWarm.setBackgroundColor(R.color.white);
+        addWarm.setBackground(context.getResources().getDrawable(R.drawable.warmup_button_border));
+        addWarm.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        addWarm.setPadding(20, 20, 20, 20);
+        addWarm.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         addWarm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                root.removeView(addWarmup);
-                root.addView(addWarmup(context));
-                root.addView(addWarmup);
+                int warmUpSets = 0;
+                for(int i = 0; i < root.getChildCount(); i++){
+                    if (root.getChildAt(i).getId() == R.id.warmUpSet){
+                        warmUpSets += 1 ;
+                    }
+                }
+
+                root.addView(addWarmup(context), 4 + warmUpSets);
             }
         });
 
@@ -522,7 +597,7 @@ public class LayoutHelper extends AppCompatActivity {
         target.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         EditText resW = new EditText(context);
-        resW.setHint("kg");
+        resW.setText(String.valueOf(weight));
         resW.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         resW.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -532,10 +607,45 @@ public class LayoutHelper extends AppCompatActivity {
         resR.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         ImageButton tick = new ImageButton(context);
-        tick.setBackgroundResource(R.drawable.ic_baseline_tick);
+
         LinearLayout.LayoutParams tickParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-        tickParams.setMargins(90, 30, 90 ,10);
         tick.setLayoutParams(tickParams);
+        tick.setId(R.id.tickNeutral);
+        tick.setScaleType(ImageView.ScaleType.CENTER);
+        tickParams.setMargins(0, 30, 0, 0);
+        tick.setScaleX(0.3f);
+        tick.setBackgroundResource(R.drawable.ic_baseline_tick);
+
+        tick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resW.setText(String.valueOf(weight));
+                resR.setText(String.valueOf(reps));
+            }
+        });
+
+        resR.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(resR.getText().toString().isEmpty()){
+                    tick.setBackgroundResource(R.drawable.ic_baseline_tick);
+                }else if(Double.parseDouble(resW.getText().toString()) >= weight && Integer.parseInt(resR.getText().toString()) >= reps){
+                    tick.setBackgroundResource(R.drawable.ic_tick_completed);
+                    tick.setId(R.id.tickCompleted);
+                }else{
+                    tick.setBackgroundResource(R.drawable.ic_tick_failed);
+                    tick.setId(R.id.tickFailed);
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
         set.addView(warm);
         set.addView(target);
@@ -543,13 +653,8 @@ public class LayoutHelper extends AppCompatActivity {
         set.addView(resR);
         set.addView(tick);
 
-
-
         return set;
 
     }
-
-
-
 
 }

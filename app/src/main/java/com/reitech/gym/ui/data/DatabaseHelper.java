@@ -56,6 +56,7 @@ public class DatabaseHelper extends AppCompatActivity {
             public void handleMessage(Message msg) {
                 Program p = new Program();
                     try {
+                        p.pid = program.getProgramID();
                         p.name = program.getName();
                         p.imageResourceID = program.getImageResouceID();
                         p.description = program.getDescription();
@@ -67,17 +68,25 @@ public class DatabaseHelper extends AppCompatActivity {
                         p.deadFail = program.getDeadFail();
                         p.ohpFail = program.getOhpFail();
                         p.squatFail = program.getSquatFail();
-                        p.bench3RepMax = program.getBench3RepMax();
-                        p.squat3RepMax = program.getSquat3RepMax();
-                        p.dead3RepMax = program.getDead3RepMax();
-                        p.ohp3RepMax = program.getOhp3RepMax();
+                        p.benchFailT2 = program.getBenchFailT2();
+                        p.deadFailT2 = program.getDeadFailT2();
+                        p.ohpFailT2 = program.getOhpFailT2();
+                        p.squatFailT2 = program.getSquatFailT2();
+                        p.benchT1ThreeRep = program.getBenchT1ThreeRep();
+                        p.squatT1ThreeRep = program.getSquatT1ThreeRep();
+                        p.deadT1ThreeRep = program.getDeadT1ThreeRep();
+                        p.ohpT1ThreeRep = program.getOhpT1ThreeRep();
+                        p.benchT2TenRep = program.getBenchT2TenRep();
+                        p.squatT2TenRep = program.getSquatT2TenRep();
+                        p.deadT2TenRep = program.getDeadT2TenRep();
+                        p.ohpT2TenRep = program.getOhpT2TenRep();
                         p.streak = program.getStreak();
                         p.daysCompleted = program.getDaysCompleted();
                         p.maxIncreaseDefault = program.getMaxIncreaseDefault();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                programDao.insertProgram(p);
+                programDao.insertOrUpdate(p);
             }
         };
         handler.sendEmptyMessage(1);

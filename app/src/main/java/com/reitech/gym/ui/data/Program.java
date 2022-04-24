@@ -65,17 +65,41 @@ public class Program {
     @ColumnInfo(name = "ohp_fail")
     public int ohpFail;
 
-    @ColumnInfo(name = "bench_3_rep_max")
-    public double bench3RepMax;
+    @ColumnInfo(name = "bench_failT2")
+    public int benchFailT2;
 
-    @ColumnInfo(name = "squat_3_rep_max")
-    public double squat3RepMax;
+    @ColumnInfo(name = "squat_failT2")
+    public int squatFailT2;
 
-    @ColumnInfo(name = "dead_3_rep_max")
-    public double dead3RepMax;
+    @ColumnInfo(name = "dead_failT2")
+    public int deadFailT2;
 
-    @ColumnInfo(name = "ohp_3_rep_max")
-    public double ohp3RepMax;
+    @ColumnInfo(name = "ohp_failT2")
+    public int ohpFailT2;
+
+    @ColumnInfo(name = "benchT1ThreeRep")
+    public double benchT1ThreeRep;
+
+    @ColumnInfo(name = "benchT2TenRep")
+    public double benchT2TenRep;
+
+    @ColumnInfo(name = "squatT1ThreeRep")
+    public double squatT1ThreeRep;
+
+    @ColumnInfo(name = "squatT2TenRep")
+    public double squatT2TenRep;
+
+    @ColumnInfo(name = "deadT1ThreeRep")
+    public double deadT1ThreeRep;
+
+    @ColumnInfo(name = "deadT2TenRep")
+    public double deadT2TenRep;
+
+    @ColumnInfo(name = "ohpT1ThreeRep")
+    public double ohpT1ThreeRep;
+
+    @ColumnInfo(name = "ohpT2TenRep")
+    public double ohpT2TenRep;
 
     @Dao
     public interface ProgramDao {
@@ -85,11 +109,22 @@ public class Program {
         @Delete
         public void deleteProgram(Program... programs);
 
-        @Update
+        @Update(onConflict = OnConflictStrategy.REPLACE)
         public void updateProgram(Program... programs);
+
+        @Query("SELECT * from program WHERE pid= :id")
+        List<Program> getItemByPid(int id);
 
         @Query("SELECT * FROM program")
         List<Program> getAll();
+
+        default void insertOrUpdate(Program program){
+            List<Program> programsFromDB = getItemByPid(program.pid);
+            if(programsFromDB.isEmpty())
+                insertProgram(program);
+            else
+                updateProgram(program);
+        }
 
     }
 }

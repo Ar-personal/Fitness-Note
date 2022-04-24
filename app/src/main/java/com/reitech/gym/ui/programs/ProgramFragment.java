@@ -59,10 +59,6 @@ public class ProgramFragment extends Fragment {
         LoadPrograms();
 
         programHolder = view.findViewById(R.id.programHolder);
-//        Program test = new Program("GZCLP", 0, 0);
-//        test.setImageResouceID(R.drawable.weight);
-//        test.setDescription(getString(R.string.gzclp_desc));
-//        addProgramToLayout(test);
 
         return view;
     }
@@ -84,6 +80,7 @@ public class ProgramFragment extends Fragment {
                 for (int i = 0; i < finalPrograms.size(); i++) {
                     try {
                         Program program = new Program(finalPrograms.get(i).name, finalPrograms.get(i).unitDefault, finalPrograms.get(i).weightIncrementDefault);
+                        program.setProgramID(finalPrograms.get(i).pid);
                         program.setName(finalPrograms.get(i).name);
                         program.setImageResouceID(finalPrograms.get(i).imageResourceID);
                         program.setDescription(finalPrograms.get(i).description);
@@ -95,10 +92,18 @@ public class ProgramFragment extends Fragment {
                         program.setDeadFail(finalPrograms.get(i).deadFail);
                         program.setSquatFail(finalPrograms.get(i).squatFail);
                         program.setOhpFail(finalPrograms.get(i).ohpFail);
-                        program.setBench3RepMax(finalPrograms.get(i).bench3RepMax);
-                        program.setSquat3RepMax(finalPrograms.get(i).squat3RepMax);
-                        program.setOhp3RepMax(finalPrograms.get(i).ohp3RepMax);
-                        program.setDead3RepMax(finalPrograms.get(i).dead3RepMax);
+                        program.setBenchFailT2(finalPrograms.get(i).benchFailT2);
+                        program.setDeadFailT2(finalPrograms.get(i).deadFailT2);
+                        program.setSquatFailT2(finalPrograms.get(i).squatFailT2);
+                        program.setOhpFailT2(finalPrograms.get(i).ohpFailT2);
+                        program.setBenchT1ThreeRep(finalPrograms.get(i).benchT1ThreeRep);
+                        program.setSquatT1ThreeRep(finalPrograms.get(i).squatT1ThreeRep);
+                        program.setOhpT1ThreeRep(finalPrograms.get(i).ohpT1ThreeRep);
+                        program.setDeadT1ThreeRep(finalPrograms.get(i).deadT1ThreeRep);
+                        program.setBenchT2TenRep(finalPrograms.get(i).benchT2TenRep);
+                        program.setSquatT2TenRep(finalPrograms.get(i).squatT2TenRep);
+                        program.setOhpT2TenRep(finalPrograms.get(i).ohpT2TenRep);
+                        program.setDeadT2TenRep(finalPrograms.get(i).deadT2TenRep);
                         program.setStreak(finalPrograms.get(i).streak);
                         program.setDaysCompleted(finalPrograms.get(i).daysCompleted);
                         program.setMaxIncreaseDefault(finalPrograms.get(i).maxIncreaseDefault);
@@ -123,7 +128,7 @@ public class ProgramFragment extends Fragment {
             LinearLayout child = LayoutHelper.addWorkout(getContext(), program.getName());
             child.setBackgroundResource(R.drawable.borderless_radial_corner);
             LinearLayout imgAndDesc = LayoutHelper.addProgramImageAndDescription(getContext(), program.getImageResouceID(), program.getDescription());
-            FlexboxLayout progressionBlocks = LayoutHelper.addProgressionBlocks(getContext(), 60);
+            FlexboxLayout progressionBlocks = LayoutHelper.addProgressionBlocks(getContext(), program.getDaysCompleted());
             LinearLayout continueButton = LayoutHelper.addContinueButton(getContext());
             Button cont = continueButton.findViewById(R.id.cont);
             cont.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +141,7 @@ public class ProgramFragment extends Fragment {
                         default:
                             Toast.makeText(getContext(), "Program name unknown", Toast.LENGTH_SHORT).show();
                     }
+                    dismiss();
                 }
             });
 
@@ -147,5 +153,10 @@ public class ProgramFragment extends Fragment {
 
             programHolder.addView(child);
 
+    }
+
+    public void dismiss(){
+        getParentFragmentManager().beginTransaction().remove(this)
+                .commit();
     }
 }

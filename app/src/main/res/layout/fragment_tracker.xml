@@ -82,7 +82,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="5dp"
-        android:backgroundTint="@color/positive"
+        android:backgroundTint="@color/green"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_baseline_add_24" />
 

@@ -13,4 +13,10 @@
     <item name="t2Layout" type="id"/>
     <item name="t3Layout" type="id"/>
     <item name="programName" type="id"/>
+    <item name="tickNeutral" type="id"/>
+    <item name="tickFailed" type="id"/>
+    <item name="tickCompleted" type="id"/>
+    <item name="tier" type="id"/>
+    <item name="warmUpSet" type="id"/>
+
 </resources>

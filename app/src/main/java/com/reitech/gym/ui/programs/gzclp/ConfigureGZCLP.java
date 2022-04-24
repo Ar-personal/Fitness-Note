@@ -78,6 +78,10 @@ public class ConfigureGZCLP extends Fragment {
                 Program program = new Program("GZCLP", unit, weight);
                 program.setDescription(getString(R.string.gzclp_desc));
                 program.setImageResouceID(R.drawable.weight);
+                program.setBenchMax(bench);
+                program.setSquatMax(squat);
+                program.setOhpMax(ohp);
+                program.setDeadliftMax(deadlift);
 
                 Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("PROGRAMS");
 

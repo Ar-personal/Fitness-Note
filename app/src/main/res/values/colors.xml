@@ -7,12 +7,12 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="border">#F1F1F1</color>
-    <color name="borderDark">#2F2D2D</color>
-    <color name="background">#175994</color>
-    <color name = "dark">#0F171E</color>
-    <color name = "primary">#FF9A4C</color>
-    <color name = "positive">#284275</color>
+    <color name="borderDark">#FFE135</color>
+    <color name="background">#0275AC</color>
+    <color name = "dark">#181D22</color>
+    <color name = "primary">#FFF44F</color>
+    <color name = "positive">#FFD124</color>
     <color name = "negative">#FB4B54</color>
-    <color name = "tertiary">#175994</color>
-    <color name= "green">#479030</color>
+    <color name = "tertiary">#FFE135</color>
+    <color name= "green">#21B625</color>
 </resources>
