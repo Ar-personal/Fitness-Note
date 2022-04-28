@@ -1,6 +1,5 @@
 package com.reitech.gym.ui.data;
 
-import android.app.Activity;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +13,8 @@ import com.reitech.gym.MainActivity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DatabaseHelper extends AppCompatActivity {
 
@@ -91,6 +92,41 @@ public class DatabaseHelper extends AppCompatActivity {
         };
         handler.sendEmptyMessage(1);
 
+    }
+
+
+    public static List<WorkoutLine> getWorkoutEntireHistory(String workoutName){
+        Workout.WorkoutDao workoutDao = MainActivity.workoutDao;
+        List<Workout> dayWorkouts = workoutDao.getEntireWorkoutHistory(workoutName);
+        List<WorkoutLine> workoutLines = new ArrayList<>();
+                for (int i = 0; i < dayWorkouts.size(); i++) {
+                    WorkoutLine workoutLine = new WorkoutLine();
+                    try {
+                        workoutLine.wid = dayWorkouts.get(i).wid;
+                        workoutLine.date = dayWorkouts.get(i).date;
+                        workoutLine.exerciseName = dayWorkouts.get(i).exerciseName;
+                        workoutLine.category = dayWorkouts.get(i).category;
+                        workoutLine.time = dayWorkouts.get(i).time;
+                        workoutLine.weight = dayWorkouts.get(i).weight;
+                        workoutLine.reps = dayWorkouts.get(i).reps;
+                        workoutLine.distance = dayWorkouts.get(i).distance;
+                        workoutLine.distanceUnit = dayWorkouts.get(i).distanceUnit;
+                        workoutLine.programTag = dayWorkouts.get(i).programTag;
+                        workoutLines.add(workoutLine);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+//        ExecutorService es = Executors.newCachedThreadPool();
+//        es.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        });
+//        es.invokeAll()
+        return workoutLines;
     }
 
 

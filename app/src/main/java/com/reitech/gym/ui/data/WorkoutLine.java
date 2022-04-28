@@ -1,10 +1,14 @@
 package com.reitech.gym.ui.data;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.room.ColumnInfo;
 import androidx.room.TypeConverters;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 public class WorkoutLine implements Serializable {
 
@@ -28,5 +32,16 @@ public class WorkoutLine implements Serializable {
 
     public String programTag;
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public LocalDate getDate() {
+        return LocalDate.parse(date);
+    }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
 }

@@ -1,6 +1,5 @@
 package com.reitech.gym.ui.tracker;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -37,6 +36,7 @@ import com.reitech.gym.R;
 import com.reitech.gym.ui.data.Workout;
 import com.reitech.gym.ui.data.WorkoutLine;
 import com.reitech.gym.ui.exerciselist.AddExerciseFragment;
+import com.reitech.gym.ui.tracker.workout_input.WorkoutInputFragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -46,7 +46,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 public class TrackerFragment extends Fragment {
 
@@ -159,6 +158,25 @@ public class TrackerFragment extends Fragment {
         if(linearLayout == null){
             addWorkout(wl.exerciseName, wl.category);
             linearLayout = getWorkoutLayout(wl.exerciseName);
+
+            //user click on a workout and input page will open
+            linearLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Fragment workout = new WorkoutInputFragment(wl.exerciseName);
+                    List<WorkoutLine> toAdd = getExerciseLinesFromExercise(wl.exerciseName);
+                    Bundle bundle = new Bundle();
+                    for(int i = 0; i < toAdd.size(); i++){
+                        bundle.putSerializable("list" + i, toAdd.get(i));
+                    }
+
+                    workout.setArguments(bundle);
+
+                    getParentFragmentManager().beginTransaction()
+                            .add(R.id.nav_host_fragment_activity_main, workout).addToBackStack(null).commit();
+                    onDestroy();
+                }
+            });
         }
 
          addWorkoutLine(wl, linearLayout);
@@ -539,6 +557,7 @@ public class TrackerFragment extends Fragment {
                 //remove " kgs"
                 workoutLine.weight = Double.parseDouble(weightText.substring(0, weightText.length() - 4));
                 workoutLine.reps = Integer.parseInt(reps.getText().toString());
+                workoutLine.category = com.reitech.gym.ui.tracker.Workout.getCategoryFromExerciseName(workoutName).toString();
 
                 lines.add(workoutLine);
                 continue;

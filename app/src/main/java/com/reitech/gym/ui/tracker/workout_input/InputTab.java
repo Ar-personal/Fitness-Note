@@ -1,6 +1,5 @@
-package com.reitech.gym.ui.tracker;
+package com.reitech.gym.ui.tracker.workout_input;
 
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,21 +20,22 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.reitech.gym.R;
+import com.reitech.gym.ui.data.DatabaseHelper;
 import com.reitech.gym.ui.data.WorkoutLine;
+import com.reitech.gym.ui.tracker.TrackerFragment;
+import com.reitech.gym.ui.tracker.Workout;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkoutInputFragment extends Fragment {
+public class InputTab extends Fragment {
 
     private Workout.WorkoutEnum type;
-    private boolean empty;
     private LinearLayout root;
     private Button save, clear;
     private EditText weight, reps, hour, minute, second, distance;
@@ -44,22 +44,36 @@ public class WorkoutInputFragment extends Fragment {
     private RecyclerView workoutInputList;
     private String workoutName;
 
-    public WorkoutInputFragment(String workoutName, Workout.WorkoutEnum type) {
-        this.type = type;
+    public InputTab(String workoutName, Workout.WorkoutEnum type) {
         this.workoutName = workoutName;
+        this.type = type;
     }
 
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_workout_input, container, false);
+        final View view = inflater.inflate(R.layout.input_tab, container, false);
 
         root = view.findViewById(R.id.workout_input_layout);
         save = view.findViewById(R.id.saveButton);
         clear = view.findViewById(R.id.clearButton);
 
+        LinearLayout title = new LinearLayout(getContext());
+        title.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        TextView titleText = new TextView(getContext());
+        titleText.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        titleText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        titleText.setText(workoutName);
+        titleText.setTextSize(26);
+        titleText.setTypeface(Typeface.DEFAULT_BOLD);
+        titleText.setTextColor(getContext().getResources().getColor(R.color.primary));
+        title.addView(titleText);
+        root.addView(title);
+
         createLayout();
+
+
 
         workoutHistory = new ArrayList<>();
         workoutInputList = view.findViewById(R.id.workoutInputList);
@@ -77,20 +91,9 @@ public class WorkoutInputFragment extends Fragment {
                     lines.add((WorkoutLine) bundle.get(key));
             }
         }
-        //add older workouts to recycler view
-        // TODO: 20/03/2022 unify string indices across the board 
-        for(int i = 0; i < lines.size(); i++){
-            //to add is the order the text is added to the adapter
-            WorkoutLine workoutLine = new WorkoutLine();
-            //iterator is simple list of bundled data weight at 1 reps at 2
-            workoutLine.distanceUnit = lines.get(i).distanceUnit;
-            workoutLine.distance = lines.get(i).distance;
-            workoutLine.weight = lines.get(i).weight;
-            workoutLine.reps = lines.get(i).reps;
-            workoutLine.time = lines.get(i).time;
-            workoutLine.category = lines.get(i).category;
 
-            workoutHistory.add(workoutLine);
+        for(int i = 0; i < lines.size(); i++){
+            workoutHistory.add(lines.get(i));
             workoutInputAdapter.notifyDataSetChanged();
         }
 
@@ -150,7 +153,7 @@ public class WorkoutInputFragment extends Fragment {
                         t += ":";
                         t += second.getText().toString().trim();
                         workoutLine.time = t;
-                        workoutLine.distance = Double.parseDouble(distance.getText().toString().trim());
+                        workoutLine.distance = Double.parseDouble(distance.getText().toString());
                         workoutLine.distanceUnit = unit.getSelectedItem().toString().trim();
                         workoutLine.category = "TIME_AND_DISTANCE";
 
@@ -225,8 +228,10 @@ public class WorkoutInputFragment extends Fragment {
         weight = new EditText(getContext());
         reps = new EditText(getContext());
         LinearLayout weightLabel = createInputLabel("Weight (Kgs)");
+        weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         LinearLayout weightInput = createIntInputLayout(weight);
         LinearLayout repsLabel = createInputLabel("Reps");
+        reps.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         LinearLayout repsInput = createIntInputLayout(reps);
 
         root.addView(weightLabel);
@@ -240,6 +245,7 @@ public class WorkoutInputFragment extends Fragment {
         LinearLayout weightLabel = createInputLabel("Weight (Kgs)");
         LinearLayout weightInput = createIntInputLayout(weight);
         LinearLayout timeLabel = createInputLabel("Time");
+        weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         LinearLayout timeInput = createTimeInputLayout();
 
         root.addView(weightLabel);
@@ -252,12 +258,11 @@ public class WorkoutInputFragment extends Fragment {
         LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setWeightSum(3);
 
-
         LinearLayout timeLabel = createInputLabel("Time");
+
         LinearLayout timeInput = createTimeInputLayout();
         LinearLayout distanceLabel = createInputLabel("Distance");
         LinearLayout distanceInput = createDistanceInputLayout();
-
 
         root.addView(timeLabel);
         root.addView(timeInput);
@@ -274,9 +279,9 @@ public class WorkoutInputFragment extends Fragment {
         TextView weightText =  new TextView(getContext());
         weightText.setText(label);
         weightText.setTextSize(20);
-        weightText.setTextColor(getResources().getColor(R.color.dark));
+        weightText.setTextColor(getResources().getColor(R.color.white));
         weightText.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
-        weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        weightText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         weightText.setLayoutParams(new LinearLayout.LayoutParams(0 ,LinearLayout.LayoutParams.WRAP_CONTENT,1.0f));
 
         weight.addView(weightText);
@@ -298,7 +303,7 @@ public class WorkoutInputFragment extends Fragment {
         hour.setInputType(InputType.TYPE_CLASS_NUMBER);
         minute.setInputType(InputType.TYPE_CLASS_NUMBER);
         second.setInputType(InputType.TYPE_CLASS_NUMBER);
-        
+
         hour.setHint("hh");
         minute.setHint("mm");
         second.setHint("ss");

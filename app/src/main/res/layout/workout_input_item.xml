@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     android:clickable="true"
     android:focusable="true"
-    android:background="@color/purple_200">
+    android:background="@color/background">
 
 
     <TextView
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:textSize="16dp"
-        tools:text="Trophy"
+        tools:text=""
         android:textAlignment="center"
         android:layout_weight="1"/>
 

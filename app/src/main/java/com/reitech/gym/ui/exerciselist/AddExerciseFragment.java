@@ -2,8 +2,6 @@ package com.reitech.gym.ui.exerciselist;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,20 +20,16 @@ import com.reitech.gym.R;
 import com.reitech.gym.ui.data.WorkoutLine;
 import com.reitech.gym.ui.tracker.TrackerFragment;
 import com.reitech.gym.ui.tracker.Workout;
-import com.reitech.gym.ui.tracker.WorkoutInputFragment;
+import com.reitech.gym.ui.tracker.workout_input.WorkoutInputFragment;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-import io.github.luizgrp.sectionedrecyclerviewadapter.Section;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 
@@ -127,7 +120,7 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
     public void onItemRootViewClicked(@NonNull final ExerciseSection section, final int itemAdapterPosition, final String exerciseName){
 
 
-        Fragment workout = new WorkoutInputFragment(exerciseName, Workout.getCategoryFromExerciseName(exerciseName));
+        Fragment workout = new WorkoutInputFragment(exerciseName);
 
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
         TrackerFragment trackerFragment = (TrackerFragment) f;

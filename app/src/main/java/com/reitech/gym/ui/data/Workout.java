@@ -70,6 +70,9 @@ public class Workout {
         @Query("SELECT * FROM workout_line")
         List<Workout> getAll();
 
+        @Query("SELECT * FROM workout_line WHERE exercise_name LIKE :exName")
+        List<Workout> getEntireWorkoutHistory(String exName);
+
         @Query("SELECT * FROM workout_line WHERE date = :date")
         List<Workout> getWorkoutsFromDate(String date);
 

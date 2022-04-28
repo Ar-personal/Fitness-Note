@@ -1,4 +1,4 @@
-package com.reitech.gym.ui.tracker;
+package com.reitech.gym.ui.tracker.workout_input;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.reitech.gym.R;
 import com.reitech.gym.ui.data.WorkoutLine;
+import com.reitech.gym.ui.tracker.WorkoutViewHolder;
 
 import org.jetbrains.annotations.NotNull;
 
