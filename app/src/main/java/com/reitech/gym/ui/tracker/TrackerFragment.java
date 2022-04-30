@@ -27,6 +27,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -78,7 +79,7 @@ public class TrackerFragment extends Fragment {
         String day = getReadableDate(date.getDayOfMonth());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy");
 
-        RelativeLayout root = view.findViewById(R.id.trackerLayout);
+        ConstraintLayout root = view.findViewById(R.id.trackerLayout);
         ScrollView scrollView = view.findViewById(R.id.scrollView);
         GestureDetector gestureDetector = new GestureDetector(getActivity(), new MyGestureListener());
 
@@ -121,17 +122,17 @@ public class TrackerFragment extends Fragment {
         });
         
 
-        FloatingActionButton fab = view.findViewById(R.id.fab_add_program);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @RequiresApi(api = Build.VERSION_CODES.R)
-            @Override
-            public void onClick(View view) {
-                Fragment addExerciseFragment = new AddExerciseFragment();
-                getParentFragmentManager().beginTransaction()
-                        .add(R.id.nav_host_fragment_activity_main, addExerciseFragment, "EXERCISE").addToBackStack(null).commit();
-            }
-
-        });
+//        FloatingActionButton fab = view.findViewById(R.id.fab_add_program);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @RequiresApi(api = Build.VERSION_CODES.R)
+//            @Override
+//            public void onClick(View view) {
+//                Fragment addExerciseFragment = new AddExerciseFragment();
+//                getParentFragmentManager().beginTransaction()
+//                        .add(R.id.nav_host_fragment_activity_main, addExerciseFragment, "EXERCISE").addToBackStack(null).commit();
+//            }
+//
+//        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -140,6 +141,7 @@ public class TrackerFragment extends Fragment {
         Fragment trackerFragment = new TrackerFragment(yesterday);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -148,6 +150,7 @@ public class TrackerFragment extends Fragment {
         Fragment trackerFragment = new TrackerFragment(tomorrow);
         getActivity().getSupportFragmentManager().beginTransaction()
                 .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
         @RequiresApi(api = Build.VERSION_CODES.O)

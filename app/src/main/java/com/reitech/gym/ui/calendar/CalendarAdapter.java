@@ -71,6 +71,7 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>{
 
             if(l.isEqual(LocalDate.now())){
                 holder.dayOfMonth.setBackgroundResource(R.drawable.calendar_today);
+                holder.dayOfMonth.setTextColor(R.color.black);
             }
         }
         holder.dayOfMonth.setText(daysOfMonth.get(position));

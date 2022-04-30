@@ -131,6 +131,7 @@ public class ProgramFragment extends Fragment {
             FlexboxLayout progressionBlocks = LayoutHelper.addProgressionBlocks(getContext(), program.getDaysCompleted());
             LinearLayout continueButton = LayoutHelper.addContinueButton(getContext());
             Button cont = continueButton.findViewById(R.id.cont);
+            cont.setTextColor(R.color.black);
             cont.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

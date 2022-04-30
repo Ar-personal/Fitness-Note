@@ -106,7 +106,7 @@ public class LayoutHelper extends AppCompatActivity {
         for (int i = 0; i < amt; i++){
             Button button = new Button(context);
             button.setLayoutParams(buttonParams);
-            button.setBackgroundColor(context.getResources().getColor(R.color.primary));
+            button.setBackgroundColor(context.getResources().getColor(R.color.white));
             flexboxLayout.addView(button);
         }
 
@@ -204,19 +204,19 @@ public class LayoutHelper extends AppCompatActivity {
 
         TextView set = new TextView(context);
         set.setText("Set");
-        set.setTextColor(context.getResources().getColor(R.color.positive));
+        set.setTextColor(context.getResources().getColor(R.color.white));
         set.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         set.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView target = new TextView(context);
         target.setText("Target");
-        target.setTextColor(context.getResources().getColor(R.color.positive));
+        target.setTextColor(context.getResources().getColor(R.color.white));
         target.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         target.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
         TextView result = new TextView(context);
         result.setText("Result");
-        result.setTextColor(context.getResources().getColor(R.color.positive));
+        result.setTextColor(context.getResources().getColor(R.color.white));
         result.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         result.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
 
@@ -225,9 +225,9 @@ public class LayoutHelper extends AppCompatActivity {
         l.setText("");
 
         TextView completed = new TextView(context);
-        completed.setTextColor(context.getResources().getColor(R.color.positive));
+        completed.setTextColor(context.getResources().getColor(R.color.white));
         completed.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
-        completed.setText("Completed");
+        completed.setText("Done");
 
         titles.addView(set);
         titles.addView(target);
@@ -249,7 +249,7 @@ public class LayoutHelper extends AppCompatActivity {
         TextView name = new TextView(context);
         name.setText(label);
         name.setId(R.id.programName);
-        name.setTextColor(context.getResources().getColor(R.color.positive));
+        name.setTextColor(context.getResources().getColor(R.color.white));
         name.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         name.setTypeface(name.getTypeface(), Typeface.BOLD);
@@ -258,7 +258,7 @@ public class LayoutHelper extends AppCompatActivity {
         TextView tier = new TextView(context);
         tier.setId(R.id.tier);
         tier.setText("T1");
-        tier.setTextColor(context.getResources().getColor(R.color.positive));
+        tier.setTextColor(context.getResources().getColor(R.color.white));
         tier.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         tier.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tier.setTypeface(name.getTypeface(), Typeface.BOLD);
@@ -368,7 +368,7 @@ public class LayoutHelper extends AppCompatActivity {
         TextView name = new TextView(context);
         name.setText(label);
         name.setId(R.id.programName);
-        name.setTextColor(context.getResources().getColor(R.color.positive));
+        name.setTextColor(context.getResources().getColor(R.color.white));
         name.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         name.setTypeface(name.getTypeface(), Typeface.BOLD);
@@ -377,7 +377,7 @@ public class LayoutHelper extends AppCompatActivity {
         TextView tier = new TextView(context);
         tier.setId(R.id.tier);
         tier.setText("T2");
-        tier.setTextColor(context.getResources().getColor(R.color.positive));
+        tier.setTextColor(context.getResources().getColor(R.color.white));
         tier.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         tier.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tier.setTypeface(name.getTypeface(), Typeface.BOLD);
@@ -478,7 +478,7 @@ public class LayoutHelper extends AppCompatActivity {
         TextView name = new TextView(context);
         name.setText(label);
         name.setId(R.id.programName);
-        name.setTextColor(context.getResources().getColor(R.color.positive));
+        name.setTextColor(context.getResources().getColor(R.color.white));
         name.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         name.setTypeface(name.getTypeface(), Typeface.BOLD);
@@ -487,7 +487,7 @@ public class LayoutHelper extends AppCompatActivity {
         TextView tier = new TextView(context);
         tier.setId(R.id.tier);
         tier.setText("T3");
-        tier.setTextColor(context.getResources().getColor(R.color.positive));
+        tier.setTextColor(context.getResources().getColor(R.color.white));
         tier.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
         tier.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         tier.setTypeface(name.getTypeface(), Typeface.BOLD);

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class WorkoutViewHolder extends RecyclerView.ViewHolder {
     public LinearLayout layout;
-    public TextView trophy, first, second;
+    public TextView trophy, first, second, date;
 
     public WorkoutViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);

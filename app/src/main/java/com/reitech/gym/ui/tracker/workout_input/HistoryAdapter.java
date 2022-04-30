@@ -25,7 +25,8 @@ import java.time.format.FormatStyle;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<WorkoutViewHolder>{
-    List<WorkoutLine> lines;
+    private List<WorkoutLine> lines;
+    private View view;
 
     public HistoryAdapter(List<WorkoutLine> lines) {
         this.lines = lines;
@@ -34,7 +35,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<WorkoutViewHolder>{
     @NotNull
     @Override
     public WorkoutViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
+        view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.workout_input_item, parent, false);
 
         return new WorkoutViewHolder(view);

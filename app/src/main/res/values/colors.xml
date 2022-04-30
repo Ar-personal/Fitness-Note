@@ -15,4 +15,5 @@
     <color name = "negative">#FB4B54</color>
     <color name = "tertiary">#FFE135</color>
     <color name= "green">#21B625</color>
+    <color name= "transparent">#FFFFFF</color>
 </resources>
