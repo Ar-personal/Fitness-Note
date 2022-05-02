@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.tabs.TabLayout;
+import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
 import com.reitech.gym.ui.data.DatabaseHelper;
 import com.reitech.gym.ui.data.WorkoutLine;
@@ -56,7 +57,12 @@ public class WorkoutInputFragment extends Fragment {
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_workout_input, container, false);
 
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.fab.setVisibility(View.INVISIBLE);
+
         List<WorkoutLine> entireHistory = DatabaseHelper.getWorkoutEntireHistory(workoutName);
+
+
 
         TabLayout tabLayout = view.findViewById(R.id.tracker_tab);
 

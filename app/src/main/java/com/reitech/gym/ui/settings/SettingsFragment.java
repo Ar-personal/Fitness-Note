@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
+import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
 import com.reitech.gym.ui.tracker.WorkoutViewHolder;
 
@@ -40,6 +41,8 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(@NonNull @NotNull LayoutInflater inflater, @Nullable @org.jetbrains.annotations.Nullable ViewGroup container, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_settings, container, false);
 
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.fab.setVisibility(View.INVISIBLE);
 
         LinearLayout linearLayout = view.findViewById(R.id.import_csv);
         linearLayout.setOnClickListener(new View.OnClickListener() {

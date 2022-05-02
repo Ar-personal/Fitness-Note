@@ -52,6 +52,9 @@ public class GZCLP extends Fragment {
 
         ConstraintLayout holder = view.findViewById(R.id.gzclp_holder);
 
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.fab.setVisibility(View.INVISIBLE);
+
         LinearLayout t1 = view.findViewById(R.id.gzclp_t1);
         LinearLayout t2 = view.findViewById(R.id.gzclp_t2);
         LinearLayout t3 = view.findViewById(R.id.gzclp_t3);

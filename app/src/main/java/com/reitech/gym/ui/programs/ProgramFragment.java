@@ -15,12 +15,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,8 +32,11 @@ import com.reitech.gym.R;
 import com.reitech.gym.ui.LayoutHelpers.LayoutHelper;
 import com.reitech.gym.ui.data.Workout;
 import com.reitech.gym.ui.data.WorkoutLine;
+import com.reitech.gym.ui.exerciselist.AddExerciseFragment;
 import com.reitech.gym.ui.programs.gzclp.GZCLP;
+import com.reitech.gym.ui.tracker.TrackerFragment;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,14 +51,13 @@ public class ProgramFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_programs, container, false);
 
 
-        FloatingActionButton fab = view.findViewById(R.id.fab_add_program);
-        fab.setOnClickListener(new View.OnClickListener() {
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
             @Override
-            public void onClick(View view) {
-                getParentFragmentManager().beginTransaction()
-                        .add(R.id.nav_host_fragment_activity_main, new AddProgramFragment()).addToBackStack(null).commit();
+            public void handleOnBackPressed() {
+                Navigation.findNavController(view).popBackStack();
             }
-        });
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
 
 
         //load programs or say add program
@@ -62,6 +67,8 @@ public class ProgramFragment extends Fragment {
 
         return view;
     }
+
+
 
     private void LoadPrograms() {
         com.reitech.gym.ui.data.Program.ProgramDao programDao = MainActivity.programDao;
@@ -159,5 +166,48 @@ public class ProgramFragment extends Fragment {
     public void dismiss(){
         getParentFragmentManager().beginTransaction().remove(this)
                 .commit();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean visible)
+    {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed())
+        {
+            onResume();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!getUserVisibleHint())
+        {
+            return;
+        }
+
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.fab.setVisibility(View.VISIBLE);
+        mainActivity.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment addProgramFragment = new AddProgramFragment();
+                getParentFragmentManager().beginTransaction()
+                        .add(R.id.nav_host_fragment_activity_main, addProgramFragment, "ADDPROGRAM").addToBackStack(null).commit();
+            }
+        });
+    }
+
+    @Override
+    public void onPause() {
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        super.onPause();
+
     }
 }

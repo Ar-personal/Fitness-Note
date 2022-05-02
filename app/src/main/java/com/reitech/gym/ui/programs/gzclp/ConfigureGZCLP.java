@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.chip.Chip;
+import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
 import com.reitech.gym.ui.programs.AddProgramFragment;
 import com.reitech.gym.ui.programs.Program;
@@ -29,9 +30,8 @@ public class ConfigureGZCLP extends Fragment {
 
         Button submit = view.findViewById(R.id.gzclp_submit);
 
-
-
-
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.fab.setVisibility(View.INVISIBLE);
 
         Switch cunit = view.findViewById(R.id.chip_unit);
         Switch cweight = view.findViewById(R.id.chip_weight);

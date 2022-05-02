@@ -11,6 +11,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,12 +24,14 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.opencsv.CSVWriter;
@@ -57,6 +60,7 @@ public class TrackerFragment extends Fragment {
     private List<LinearLayout> layoutsToDelete;
     private LinearLayout root;
 
+
     public TrackerFragment(LocalDate date){
         super(R.layout.fragment_tracker);
         this.date = date;
@@ -72,9 +76,21 @@ public class TrackerFragment extends Fragment {
         ((MainActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
+
     @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        final View view = inflater.inflate(R.layout.fragment_tracker, container, false);
+
+//        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+//            @Override
+//            public void handleOnBackPressed() {
+//                Navigation.findNavController(view).popBackStack();
+//            }
+//        };
+//        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+
+
         TextView trackerDate = view.findViewById(R.id.tackerDate);
         String day = getReadableDate(date.getDayOfMonth());
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy");
@@ -120,7 +136,7 @@ public class TrackerFragment extends Fragment {
                 goToTomorrow();
             }
         });
-        
+
 
 //        FloatingActionButton fab = view.findViewById(R.id.fab_add_program);
 //        fab.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +149,14 @@ public class TrackerFragment extends Fragment {
 //            }
 //
 //        });
+
+        return view;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -140,7 +164,7 @@ public class TrackerFragment extends Fragment {
         LocalDate yesterday = date.minusDays(1);
         Fragment trackerFragment = new TrackerFragment(yesterday);
         getActivity().getSupportFragmentManager().beginTransaction()
-                .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+                .replace(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
@@ -149,7 +173,7 @@ public class TrackerFragment extends Fragment {
         LocalDate tomorrow = date.plusDays(1);
         Fragment trackerFragment = new TrackerFragment(tomorrow);
         getActivity().getSupportFragmentManager().beginTransaction()
-                .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+                .replace(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
         getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
@@ -176,7 +200,7 @@ public class TrackerFragment extends Fragment {
                     workout.setArguments(bundle);
 
                     getParentFragmentManager().beginTransaction()
-                            .add(R.id.nav_host_fragment_activity_main, workout).addToBackStack(null).commit();
+                            .replace(R.id.nav_host_fragment_activity_main, workout).addToBackStack(null).commit();
                     onDestroy();
                 }
             });
@@ -188,6 +212,37 @@ public class TrackerFragment extends Fragment {
         }
 
 
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean visible)
+    {
+        super.setUserVisibleHint(visible);
+        if (visible && isResumed())
+        {
+            onResume();
+        }
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (!getUserVisibleHint())
+        {
+            return;
+        }
+
+        MainActivity mainActivity = (MainActivity)getActivity();
+        mainActivity.fab.setVisibility(View.VISIBLE);
+        mainActivity.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment addExerciseFragment = new AddExerciseFragment();
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.nav_host_fragment_activity_main, addExerciseFragment, "EXERCISE").addToBackStack(null).commit();
+            }
+        });
     }
 
     private void addWorkoutToDatabase(WorkoutLine wl, LocalDate date) {

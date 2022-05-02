@@ -24,6 +24,7 @@ import com.reitech.gym.ui.calendar.CalendarAdapter;
 import com.reitech.gym.ui.data.Workout;
 import com.reitech.gym.ui.data.WorkoutLine;
 import com.reitech.gym.ui.settings.SettingsFragment;
+import com.reitech.gym.ui.tracker.TrackerFragment;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -71,6 +72,7 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 7);
         calendarRecyclerView.setLayoutManager(layoutManager);
         calendarRecyclerView.setAdapter(calendarAdapter);
+
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -107,4 +109,6 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
     public void onItemClick(int position, String sayText) {
 
     }
+
+
 }
