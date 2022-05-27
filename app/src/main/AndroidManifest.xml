@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Gym">
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name=".MainActivity"
             android:exported="true"
             android:label=""

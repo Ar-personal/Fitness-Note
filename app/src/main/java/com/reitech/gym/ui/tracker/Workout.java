@@ -1,6 +1,7 @@
 package com.reitech.gym.ui.tracker;
 
 import com.reitech.gym.ui.data.ExerciseListSetup;
+import com.reitech.gym.ui.data.WorkoutLine;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ public class Workout {
         this.workoutName = workoutName;
         this.category = category;
     };
+
 
     public static WorkoutEnum getCategoryFromExerciseName(String exerciseName){
         Workout.WorkoutEnum category = null;

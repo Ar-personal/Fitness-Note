@@ -7,6 +7,7 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,6 +32,7 @@ import com.reitech.gym.ui.tracker.Workout;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,10 +46,12 @@ public class InputTab extends Fragment {
     private List<WorkoutLine> workoutHistory;
     private RecyclerView workoutInputList;
     private String workoutName;
+    LocalDate date;
 
-    public InputTab(String workoutName, Workout.WorkoutEnum type) {
+    public InputTab(String workoutName, Workout.WorkoutEnum type, LocalDate date) {
         this.workoutName = workoutName;
         this.type = type;
+        this.date = date;
     }
 
     @Nullable
@@ -107,6 +112,9 @@ public class InputTab extends Fragment {
                 workoutLine.exerciseName = workoutName;
                 switch (type){
                     case WEIGHT_AND_REPS:
+                        if(weight.getText().toString().equals("")){
+                            return;
+                        }
                         workoutLine.weight = Double.parseDouble(weight.getText().toString());
                         workoutLine.reps = Integer.parseInt(reps.getText().toString());
                         workoutLine.category = "WEIGHT_AND_REPS";
@@ -119,17 +127,25 @@ public class InputTab extends Fragment {
                             workoutInputAdapter.notifyDataSetChanged();
 
                             TrackerFragment trackerFragment = (TrackerFragment) f;
-                            trackerFragment.setWorkout(workoutLine, false);
+                            DatabaseHelper.addWorkoutToDatabase(workoutLine, date);
                         }
                         break;
                     case WEIGHT_AND_TIME:
-                        workoutLine.weight = Double.parseDouble(weight.getText().toString());
+                        if(weight.getText().toString().equals("")){
+                            return;
+                        }
+                        //dont try to parse input if they don't have to be filled in
                         String time = "";
-                        time += hour.getText().toString().trim();
-                        time += ":";
-                        time += minute.getText().toString().trim();
-                        time += ":";
-                        time += second.getText().toString().trim();
+                        if(!hour.getText().toString().equals(""))
+                            time += hour.getText().toString().trim();
+                            time += ":";
+                        if(!minute.getText().toString().equals(""))
+                            time += minute.getText().toString().trim();
+                            time += ":";
+                        if(!second.getText().toString().equals(""))
+                            time += second.getText().toString().trim();
+
+                        workoutLine.weight = Double.parseDouble(weight.getText().toString());
                         workoutLine.time = time;
                         workoutLine.category = "WEIGHT_AND_TIME";
 
@@ -170,38 +186,43 @@ public class InputTab extends Fragment {
 
                         break;
                 }
+                clearForms(type);
+
             }
         });
 
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (type){
-                    case WEIGHT_AND_REPS:
-                        weight.setText("");
-                        reps.setText("");
-                        break;
-                    case TIME_AND_DISTANCE:
-                        hour.setText("");
-                        minute.setText("");
-                        second.setText("");
-                        break;
-                    case WEIGHT_AND_TIME:
-                        weight.setText("");
-                        hour.setText("");
-                        minute.setText("");
-                        second.setText("");
-                        break;
-                    case INVERTEDWEIGHT_AND_REPS:
-                        weight.setText("");
-                        reps.setText("");
-                        break;
-                }
-
+               clearForms(type);
             }
         });
 
         return view;
+    }
+
+    public void clearForms(Workout.WorkoutEnum type){
+        switch (type) {
+            case WEIGHT_AND_REPS:
+                weight.setText("");
+                reps.setText("");
+                break;
+            case TIME_AND_DISTANCE:
+                hour.setText("");
+                minute.setText("");
+                second.setText("");
+                break;
+            case WEIGHT_AND_TIME:
+                weight.setText("");
+                hour.setText("");
+                minute.setText("");
+                second.setText("");
+                break;
+            case INVERTEDWEIGHT_AND_REPS:
+                weight.setText("");
+                reps.setText("");
+                break;
+        }
     }
 
     private void createLayout() {

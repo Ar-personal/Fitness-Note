@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,7 @@ import com.reitech.gym.ui.tracker.workout_input.WorkoutInputFragment;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -40,6 +42,12 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
 
     private SectionedRecyclerViewAdapter sectionedAdapter;
     private RecyclerView recyclerView;
+    private LocalDate date;
+
+    public AddExerciseFragment(LocalDate date) {
+        this.date = date;
+    }
+
     @Override
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container,
                              @Nullable final Bundle savedInstanceStat) {
@@ -120,10 +128,18 @@ public class AddExerciseFragment extends Fragment implements ExerciseSection.Cli
     public void onItemRootViewClicked(@NonNull final ExerciseSection section, final int itemAdapterPosition, final String exerciseName){
 
 
-        Fragment workout = new WorkoutInputFragment(exerciseName);
+        Fragment workout = new WorkoutInputFragment(exerciseName, date);
 
         Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("TRACKER");
         TrackerFragment trackerFragment = (TrackerFragment) f;
+
+        //tracker fragment is null if add button is pressed from home so create it now
+        if(trackerFragment == null) {
+            trackerFragment = new TrackerFragment(LocalDate.now());
+            getParentFragmentManager().beginTransaction()
+                    .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+        }
+
         List<WorkoutLine> toAdd = trackerFragment.getExerciseLinesFromExercise(exerciseName);
 
         Bundle bundle = new Bundle();

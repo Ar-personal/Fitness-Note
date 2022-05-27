@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         dataBaseSetup();
         savedDataSetup();
 
+        TrackerFragment TrackerFragment = new TrackerFragment();
+
         fab.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -95,6 +97,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                     case R.id.navigation_home:
                         getSupportFragmentManager().beginTransaction().detach(homeFragment).attach(homeFragment).replace(R.id.nav_host_fragment_activity_main, homeFragment).addToBackStack(null).commit();
                         getSupportFragmentManager().beginTransaction().replace(R.id.nav_host_fragment_activity_main, homeFragment).addToBackStack(null).commit();
+                        fab.setVisibility(View.INVISIBLE);
                         onResume();
                         break;
                     case R.id.navigation_programs:

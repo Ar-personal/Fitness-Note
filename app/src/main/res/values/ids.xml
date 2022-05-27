@@ -18,5 +18,9 @@
     <item name="tickCompleted" type="id"/>
     <item name="tier" type="id"/>
     <item name="warmUpSet" type="id"/>
+    <item name="programHistory" type="id"/>
+    <item name="programSettings" type="id"/>
+    <item name="lineFirst" type="id"/>
+    <item name="lineSecond" type="id"/>
 
 </resources>

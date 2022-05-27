@@ -24,7 +24,7 @@ import com.reitech.gym.ui.tracker.TrackerFragment;
 public class ConfigureGZCLP extends Fragment {
 
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container,
-                             @Nullable final Bundle savedInstanceStat) {
+                             @Nullable final Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.congfigure_gzclp, container, false);
 

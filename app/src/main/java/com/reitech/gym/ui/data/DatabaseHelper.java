@@ -50,6 +50,7 @@ public class DatabaseHelper extends AppCompatActivity {
         handler.sendEmptyMessage(1);
     }
 
+
     public static void saveProgram(com.reitech.gym.ui.programs.Program program) {
         com.reitech.gym.ui.data.Program.ProgramDao programDao = MainActivity.programDao;
         Handler handler = new Handler(Looper.getMainLooper()) {
@@ -94,6 +95,29 @@ public class DatabaseHelper extends AppCompatActivity {
 
     }
 
+    public static void addWorkoutToDatabase(WorkoutLine wl, LocalDate date) {
+        new Thread(() ->{
+            Workout.WorkoutDao workoutDao = MainActivity.workoutDao;
+            Workout workout = new Workout();
+            workout.date = date.toString();
+            workout.exerciseName = wl.exerciseName;
+
+            //optional inputs
+            try {
+                workout.weight = wl.weight;
+                workout.reps = wl.reps;
+                workout.distanceUnit = wl.distanceUnit;
+                workout.distance = wl.distance;
+                workout.time = wl.time;
+                workout.category = wl.category;
+                workout.programTag = wl.programTag;
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+            workoutDao.insertWorkout(workout);
+        }).start();
+    }
+
 
     public static List<WorkoutLine> getWorkoutEntireHistory(String workoutName){
         Workout.WorkoutDao workoutDao = MainActivity.workoutDao;
@@ -129,5 +153,29 @@ public class DatabaseHelper extends AppCompatActivity {
         return workoutLines;
     }
 
+    public static List<WorkoutLine> getWorkoutsWithProgram(String programName) {
+        Workout.WorkoutDao workoutDao = MainActivity.workoutDao;
+        List<Workout> dayWorkouts = workoutDao.getWorkoutsFromProgram(programName);
+        List<WorkoutLine> workoutLines = new ArrayList<>();
+        for (int i = 0; i < dayWorkouts.size(); i++) {
+            WorkoutLine workoutLine = new WorkoutLine();
+            try {
+                workoutLine.wid = dayWorkouts.get(i).wid;
+                workoutLine.date = dayWorkouts.get(i).date;
+                workoutLine.exerciseName = dayWorkouts.get(i).exerciseName;
+                workoutLine.category = dayWorkouts.get(i).category;
+                workoutLine.time = dayWorkouts.get(i).time;
+                workoutLine.weight = dayWorkouts.get(i).weight;
+                workoutLine.reps = dayWorkouts.get(i).reps;
+                workoutLine.distance = dayWorkouts.get(i).distance;
+                workoutLine.distanceUnit = dayWorkouts.get(i).distanceUnit;
+                workoutLine.programTag = dayWorkouts.get(i).programTag;
+                workoutLines.add(workoutLine);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return workoutLines;
+    }
 
 }

@@ -11,7 +11,7 @@
     android:background="@color/background">
 
 
-    <TextView
+    <EditText
         android:id="@+id/trophyItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:textAlignment="center"
         android:layout_weight="1"/>
 
-    <TextView
+    <EditText
         android:id="@+id/firstItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         android:textAlignment="center"
         android:layout_weight="1"/>
 
-    <TextView
+    <EditText
         android:id="@+id/secondItem"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

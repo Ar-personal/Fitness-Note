@@ -36,6 +36,7 @@ import com.reitech.gym.ui.tracker.workout_input.WorkoutInputAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +44,16 @@ public class WorkoutInputFragment extends Fragment {
 
     private Workout.WorkoutEnum type;
     private String workoutName;
+    private LocalDate date;
 
 
-    public WorkoutInputFragment(String workoutName) {
+    public WorkoutInputFragment(String workoutName, LocalDate date) {
         this.type = Workout.getCategoryFromExerciseName(workoutName);
         this.workoutName = workoutName;
+        this.date = date;
     }
+
+
 
 
     @Nullable
@@ -66,7 +71,7 @@ public class WorkoutInputFragment extends Fragment {
 
         TabLayout tabLayout = view.findViewById(R.id.tracker_tab);
 
-        Fragment input = new InputTab(workoutName, type);
+        Fragment input = new InputTab(workoutName, type, date);
         List<WorkoutLine> lines = new ArrayList<>();
         Bundle bundle = getArguments();
         if(bundle != null){
@@ -87,7 +92,7 @@ public class WorkoutInputFragment extends Fragment {
 
                 switch (tab.getPosition()) {
                     case 0:
-                        fragment = new InputTab(workoutName, type);
+                        fragment = new InputTab(workoutName, type, date);
                         fragment.setArguments(bundle);
                         break;
                     case 1:

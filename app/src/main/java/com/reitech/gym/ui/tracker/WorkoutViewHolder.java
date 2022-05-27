@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class WorkoutViewHolder extends RecyclerView.ViewHolder {
     public LinearLayout layout;
-    public TextView trophy, first, second, date;
+    public EditText trophy, first, second, date;
 
     public WorkoutViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);
@@ -23,5 +23,8 @@ public class WorkoutViewHolder extends RecyclerView.ViewHolder {
         trophy = itemView.findViewById(R.id.trophyItem);
         first = itemView.findViewById(R.id.firstItem);
         second = itemView.findViewById(R.id.secondItem);
+
+
+
     }
 }

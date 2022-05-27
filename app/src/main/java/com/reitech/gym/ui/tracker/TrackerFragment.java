@@ -37,6 +37,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.opencsv.CSVWriter;
 import com.reitech.gym.MainActivity;
 import com.reitech.gym.R;
+import com.reitech.gym.ui.data.DatabaseHelper;
 import com.reitech.gym.ui.data.Workout;
 import com.reitech.gym.ui.data.WorkoutLine;
 import com.reitech.gym.ui.exerciselist.AddExerciseFragment;
@@ -59,11 +60,14 @@ public class TrackerFragment extends Fragment {
     private MenuItem delete;
     private List<LinearLayout> layoutsToDelete;
     private LinearLayout root;
-
+    private View view;
 
     public TrackerFragment(LocalDate date){
-        super(R.layout.fragment_tracker);
         this.date = date;
+    }
+
+    public TrackerFragment(){
+        super(R.layout.fragment_tracker);
     }
 
     //need for delete icon on toolbar
@@ -76,12 +80,11 @@ public class TrackerFragment extends Fragment {
         ((MainActivity) getActivity()).setSupportActionBar(toolbar);
     }
 
-
+    //breaks if use onCreateView
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_tracker, container, false);
-
+    public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable final ViewGroup container,
+                             @Nullable final Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_tracker, container, false);
 //        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
 //            @Override
 //            public void handleOnBackPressed() {
@@ -89,7 +92,6 @@ public class TrackerFragment extends Fragment {
 //            }
 //        };
 //        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
-
 
         TextView trackerDate = view.findViewById(R.id.tackerDate);
         String day = getReadableDate(date.getDayOfMonth());
@@ -149,14 +151,7 @@ public class TrackerFragment extends Fragment {
 //            }
 //
 //        });
-
         return view;
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -190,7 +185,7 @@ public class TrackerFragment extends Fragment {
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Fragment workout = new WorkoutInputFragment(wl.exerciseName);
+                    Fragment workout = new WorkoutInputFragment(wl.exerciseName, date);
                     List<WorkoutLine> toAdd = getExerciseLinesFromExercise(wl.exerciseName);
                     Bundle bundle = new Bundle();
                     for(int i = 0; i < toAdd.size(); i++){
@@ -208,7 +203,7 @@ public class TrackerFragment extends Fragment {
 
          addWorkoutLine(wl, linearLayout);
         if(!loaded) {
-            addWorkoutToDatabase(wl, date);
+            DatabaseHelper.addWorkoutToDatabase(wl, date);
         }
 
 
@@ -238,35 +233,14 @@ public class TrackerFragment extends Fragment {
         mainActivity.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment addExerciseFragment = new AddExerciseFragment();
+                Fragment addExerciseFragment = new AddExerciseFragment(date);
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.nav_host_fragment_activity_main, addExerciseFragment, "EXERCISE").addToBackStack(null).commit();
             }
         });
     }
 
-    private void addWorkoutToDatabase(WorkoutLine wl, LocalDate date) {
-        new Thread(() ->{
-            Workout.WorkoutDao workoutDao = ((MainActivity)getActivity()).workoutDao;
-            Workout workout = new Workout();
-            workout.date = date.toString();
-            workout.exerciseName = wl.exerciseName;
 
-            //optional inputs
-            try {
-                workout.weight = wl.weight;
-                workout.reps = wl.reps;
-                workout.distanceUnit = wl.distanceUnit;
-                workout.distance = wl.distance;
-                workout.time = wl.time;
-                workout.category = wl.category;
-                workout.programTag = wl.programTag;
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-            }
-            workoutDao.insertWorkout(workout);
-        }).start();
-    }
 
     //Date,Exercise,Category,Weight (kgs),Reps,Distance,Distance Unit,Time
     public void saveData(String workoutName, String[] workoutArray, LocalDate date){
@@ -336,7 +310,7 @@ public class TrackerFragment extends Fragment {
     public LinearLayout getWorkoutLayout(String workout){
         LinearLayout l = null;
         List<TextView> loadedTextViews = new ArrayList<>();
-        LinearLayout workoutHolder = getView().findViewById(R.id.workoutHolder);
+        LinearLayout workoutHolder = view.findViewById(R.id.workoutHolder);
         for(int i=0; i < workoutHolder.getChildCount(); i++){
             TextView t = (TextView) workoutHolder.getChildAt(i).findViewById(R.id.workout_name);
             loadedTextViews.add(t);
@@ -361,6 +335,8 @@ public class TrackerFragment extends Fragment {
     }
 
     public void addWorkout(String workout, String category){
+
+
         LinearLayout parent = createWorkoutLayout();
         parent.setBackgroundResource(R.drawable.borderless_radial_corner);
         LinearLayout.LayoutParams internalParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -454,18 +430,12 @@ public class TrackerFragment extends Fragment {
     private void addWorkoutLine(WorkoutLine wl, LinearLayout parent){
         //Date,Exercise,Category,Weight (kgs),Reps,Distance,Distance Unit,Time
 
-        // TODO: 17/03/2022 change complete reinstantiation of entire workout
-
         LinearLayout workoutLine = new LinearLayout(getContext());
 
         //if unloaded exercise then it does not exist in database until after this method currently
         //no id would have been set from reading from database
-        try {
-            workoutLine.setId(wl.wid);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
 
+        workoutLine.setId(wl.wid);
         workoutLine.setWeightSum(3);
         workoutLine.setOrientation(LinearLayout.HORIZONTAL);
         workoutLine.setBackgroundResource(R.drawable.borderless_radial_corner);
@@ -480,7 +450,7 @@ public class TrackerFragment extends Fragment {
         switch (wl.category) {
             case "WEIGHT_AND_TIME":
                 TextView weight = new TextView(getContext());
-                weight.setId(R.id.weight);
+                weight.setId(wl.wid);
                 weight.setText(wl.weight + " Kgs");
                 weight.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 weight.setLayoutParams(params);
@@ -499,8 +469,6 @@ public class TrackerFragment extends Fragment {
                 workoutLine.addView(time);
                 break;
             case "TIME_AND_DISTANCE":
-
-
                 TextView t = new TextView(getContext());
                 t.setId(R.id.time);
                 t.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -610,11 +578,27 @@ public class TrackerFragment extends Fragment {
                 if(weight == null || reps == null){
                     continue;
                 }
-                //workout line found
+                String category = com.reitech.gym.ui.tracker.Workout.getCategoryFromExerciseName(workoutName).toString();
                 String weightText = weight.getText().toString();
-                //remove " kgs"
-                workoutLine.weight = Double.parseDouble(weightText.substring(0, weightText.length() - 4));
-                workoutLine.reps = Integer.parseInt(reps.getText().toString());
+                switch (category){
+                    case "WEIGHT_AND_REPS":
+                        workoutLine.weight = Double.parseDouble(weightText.substring(0, weightText.length() - 4));
+                        workoutLine.reps = Integer.parseInt(reps.getText().toString());
+                        break;
+                    case "WEIGHT_AND_TIME":
+                        workoutLine.weight = Double.parseDouble(weightText.substring(0, weightText.length() - 4));
+                        workoutLine.time = reps.getText().toString();
+                        break;
+                    case "TIME_AND_DISTANCE":
+                        workoutLine.time = reps.getText().toString();
+                        workoutLine.distance = Double.parseDouble(reps.getText().toString());
+                        break;
+                }
+                //workout line found
+
+                workoutLine.wid = layout.getChildAt(i).getId();
+                workoutLine.exerciseName = workoutName;
+
                 workoutLine.category = com.reitech.gym.ui.tracker.Workout.getCategoryFromExerciseName(workoutName).toString();
 
                 lines.add(workoutLine);

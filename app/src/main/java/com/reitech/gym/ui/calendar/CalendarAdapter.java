@@ -64,12 +64,12 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>{
             l = localDate.withDayOfMonth(Integer.parseInt(daysOfMonth.get(position)));
 
 
-            if (checkDatabaseForWorkoutOnDate(l)){
+            if (checkDatabaseForWorkoutOnDate(l)) {
                 holder.dayOfMonth.setBackgroundResource(R.drawable.calendar_workout);
             }
 
 
-            if(l.isEqual(LocalDate.now())){
+            if (l.isEqual(LocalDate.now())) {
                 holder.dayOfMonth.setBackgroundResource(R.drawable.calendar_today);
                 holder.dayOfMonth.setTextColor(R.color.black);
             }
@@ -77,19 +77,21 @@ public class CalendarAdapter extends RecyclerView.Adapter<CalendarViewHolder>{
         holder.dayOfMonth.setText(daysOfMonth.get(position));
 
 
-
         LocalDate finalL = l;
-        holder.dayOfMonth.setOnClickListener(new View.OnClickListener() {
+        //possible to click on empty date cell so check for null
+        if (l != null) {
+            holder.dayOfMonth.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View view) {
-                if(localDate != null) {
-                    Fragment trackerFragment = new TrackerFragment(finalL);
-                    ((FragmentActivity) activity).getSupportFragmentManager().beginTransaction()
-                            .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+                @Override
+                public void onClick(View view) {
+                    if (localDate != null) {
+                        Fragment trackerFragment = new TrackerFragment(finalL);
+                        ((FragmentActivity) activity).getSupportFragmentManager().beginTransaction()
+                                .add(R.id.nav_host_fragment_activity_main, trackerFragment, "TRACKER").addToBackStack(null).commit();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override

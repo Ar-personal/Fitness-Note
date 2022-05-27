@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,9 @@ import com.google.android.flexbox.FlexWrap;
 import com.google.android.flexbox.FlexboxLayout;
 import com.google.android.flexbox.JustifyContent;
 import com.google.android.material.internal.FlowLayout;
+import com.opencsv.bean.ComplexFieldMapEntry;
 import com.reitech.gym.R;
+import com.reitech.gym.ui.data.WorkoutLine;
 import com.reitech.gym.ui.programs.Program;
 
 public class LayoutHelper extends AppCompatActivity {
@@ -134,6 +137,95 @@ public class LayoutHelper extends AppCompatActivity {
 
 
         linearLayout.addView(cont);
+        return linearLayout;
+    }
+
+    public static LinearLayout addHistorySettingsButtons(Context context){
+        LinearLayout linearLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams internalParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        linearLayout.setWeightSum(2);
+        linearLayout.setLayoutParams(internalParams);
+
+        Button history = new Button(context);
+        history.setId(R.id.programHistory);
+        history.setTextSize(12);
+        history.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        history.setBackgroundColor(context.getResources().getColor(R.color.positive));
+        history.setText("History");
+        history.setTextColor(context.getResources().getColor(R.color.white));
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+        history.setLayoutParams(buttonParams);
+        buttonParams.setMargins(30, 30, 30, 30);
+
+        Button settings = new Button(context);
+        settings.setId(R.id.programHistory);
+        settings.setTextSize(12);
+        settings.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        settings.setBackgroundColor(context.getResources().getColor(R.color.positive));
+        settings.setText("Settings");
+        settings.setTextColor(context.getResources().getColor(R.color.white));
+        LinearLayout.LayoutParams button2Params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+        settings.setLayoutParams(buttonParams);
+        button2Params.setMargins(30, 30, 30, 30);
+
+        linearLayout.addView(history);
+        linearLayout.addView(settings);
+
+        return linearLayout;
+    }
+
+    public static LinearLayout addWorkoutLine(Context context, WorkoutLine workoutLine){
+        LinearLayout linearLayout = new LinearLayout(context);
+        LinearLayout.LayoutParams internalParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linearLayout.setLayoutParams(internalParams);
+        linearLayout.setWeightSum(4);
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+        internalParams.setMargins(0, 0, 0, 0);
+
+        TextView tag = new TextView(context);
+        tag.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        tag.setText(workoutLine.programTag);
+        tag.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        TextView name = new TextView(context);
+        name.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        name.setText(workoutLine.exerciseName);
+        name.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+
+        EditText first = new EditText(context);
+        first.setId(R.id.lineFirst);
+        first.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        first.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        first.setInputType(InputType.TYPE_CLASS_NUMBER);
+        first.setMaxLines(1);
+
+        EditText second = new EditText(context);
+        second.setId(R.id.lineSecond);
+        second.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        second.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+        second.setInputType(InputType.TYPE_CLASS_NUMBER);
+        second.setMaxLines(1);
+
+        switch (workoutLine.category) {
+            case "WEIGHT_AND_TIME":
+                first.setText("" + workoutLine.weight + workoutLine);
+                second.setText("" + workoutLine.time);
+                break;
+            case "TIME_AND_DISTANCE":
+                first.setText("" + workoutLine.time);
+                second.setText("" + workoutLine.distance + workoutLine.distanceUnit);
+                break;
+            default:
+                first.setText("" + workoutLine.weight);
+                second.setText("" + workoutLine.reps);
+                break;
+        }
+        linearLayout.addView(tag);
+        linearLayout.addView(name);
+        linearLayout.addView(first);
+        linearLayout.addView(second);
+
         return linearLayout;
     }
 

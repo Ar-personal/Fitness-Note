@@ -1,5 +1,6 @@
 package com.reitech.gym.ui.programs;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,12 +132,32 @@ public class ProgramFragment extends Fragment {
     }
 
 
+    @SuppressLint("ResourceAsColor")
     public void addProgramToLayout(Program program){
             LinearLayout child = LayoutHelper.addWorkout(getContext(), program.getName());
             child.setBackgroundResource(R.drawable.borderless_radial_corner);
             LinearLayout imgAndDesc = LayoutHelper.addProgramImageAndDescription(getContext(), program.getImageResouceID(), program.getDescription());
             FlexboxLayout progressionBlocks = LayoutHelper.addProgressionBlocks(getContext(), program.getDaysCompleted());
             LinearLayout continueButton = LayoutHelper.addContinueButton(getContext());
+            LinearLayout historySettingsButton = LayoutHelper.addHistorySettingsButtons(getContext());
+            Button history = (Button) historySettingsButton.getChildAt(0);
+            Button settings = (Button) historySettingsButton.getChildAt(1);
+
+            history.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getParentFragmentManager().beginTransaction().add(R.id.nav_host_fragment_activity_main,
+                        new ProgramHistoryFragment("GZCLP"), "PROGRAM_HISTORY").addToBackStack(null).commit();
+                }
+            });
+
+            settings.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
             Button cont = continueButton.findViewById(R.id.cont);
             cont.setTextColor(R.color.black);
             cont.setOnClickListener(new View.OnClickListener() {
@@ -158,6 +179,7 @@ public class ProgramFragment extends Fragment {
             child.addView(progressionBlocks);
             child.addView(streaks);
             child.addView(continueButton);
+            child.addView(historySettingsButton);
 
             programHolder.addView(child);
 

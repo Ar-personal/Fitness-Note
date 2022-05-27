@@ -92,7 +92,11 @@ public class HomeFragment extends Fragment implements CalendarAdapter.OnItemList
             if(i <= dayOfWeek || i > daysInMonth + dayOfWeek){
                 daysInMonthArray.add("");
             }else{
-                daysInMonthArray.add(String.valueOf(i - dayOfWeek));
+                if(i - dayOfWeek <= 9){
+                    daysInMonthArray.add("0" + String.valueOf(i - dayOfWeek));
+                }else{
+                    daysInMonthArray.add(String.valueOf(i - dayOfWeek));
+                }
             }
         }
 
